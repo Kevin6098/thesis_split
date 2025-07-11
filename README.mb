@@ -1,71 +1,19 @@
-# Thesis Comment-Clustering Pipeline
+1. Cleansing: transform raw comments into analysable tokens.
+a. Normalise text – Unicode NFKC + lowercase Latin chars.
+b. Remove noise – strip URLs (https://…), email/@mentions, hashtags, HTML tags.
+c. Strip non‑content characters – delete all punctuation, symbols, emoji, and any digits (0‑9, ０‑９, Japanese numerals 一二三…).
+d. Tokenise – use a Japanese tokenizer (Janome/MeCab) configured so compound kanji words like 時間 stay intact (avoid per‑character splits).
+e. POS filter – keep only 名詞 (nouns) & 形容詞 (adjectives); drop everything else.
+f. Extra filters – discard single‑character Hiragana, the token し, and words in stop_words.py.
+g. Output – join remaining tokens with spaces → clean_joined column for TF‑IDF.
 
-## Overview
-This project clusters customer comments (e.g. restaurant reviews) and surfaces the main problems customers mention.  It is designed to run locally in **VS Code** with disk-level caching so you never repeat expensive steps.
+2. Silhouette score: test k‑means with k = 2‑10 to find the best k.
 
-| Stage | What happens |
-|-------|--------------|
-| 1 CSV → Parquet | Loads `most_commented_comments.csv`, coerces all columns to `string`, and stores a fast Parquet cache. |
-| 2 Clean & Tokenise | Removes punctuation, symbols, emoji, numbers; keeps only **nouns & adjectives**; applies custom stop words from `stop_words.py`; output cached. |
-| 3 Vectorise        | TF-IDF ➜ 100-dim **Truncated SVD**; both model & dense matrix cached. |
-| 4 Silhouette search| `MiniBatchKMeans` for *k* 2-10 using a sample-based silhouette; best *k* cached. |
-| 5 Final clustering | Fits `MiniBatchKMeans` with the cached best-k and stores the model. |
-| 6 Complaint mining | Extracts comments containing negative keywords (simple heuristic) and caches the result. |
+3. Clustering analysis: cluster the reviews.
 
----
-
-## Requirements  
-* Python 3.9-3.11  
-* `pip install pandas scikit-learn janome regex matplotlib joblib`
-
-A virtual-env (`env/`) is recommended.
-
----
-
-## Folder Layout
-```
-thesis-comments-project/
-│
-├─ data/
-│   ├─ most_commented_comments.csv      # raw input
-│   └─ stop_words.py                    # custom stop-word list (Python set)
-│
-├─ cache/      # auto-generated artefacts – safe to delete any time
-│
-├─ env/        # optional virtual-env
-└─ main.py     # master script (pipeline)
-```
-
----
-
-## Quick Start
-```bash
-# 1. clone / open project in VS Code
-# 2. (optional) python -m venv env && source env/bin/activate
-pip install -r requirements.txt   # or install packages listed above
-python main.py                    # first run populates /cache
-```
-Subsequent runs reuse cached artefacts and finish in seconds.
-
----
-
-## Customisation
-* **Stop words** – edit `data/stop_words.py` (Python list/tuple/set named `STOP_WORDS`).  
-* **Negative keywords** – adjust the `NEG = [...]` list inside `main.py` if your domain uses other complaint words.
-* **SVD dimensions / sample size / batch size** – tweak the constants near the top of each section.
-
----
-
-## Restarting from scratch
-Delete the `/cache` folder and rerun `python main.py`.
-
----
-
-## Troubleshooting
-* *ArrowInvalid* when writing Parquet → ensure all columns are read as `dtype=str` (already handled in the script).  
-* Memory issues → lower `batch_size` in `MiniBatchKMeans` or increase SVD compression (e.g. `n_components=50`).
-
----
-
-## License  
-© 2025 Your Name.  MIT License.
+4. Topic inspection: for each cluster, drill down to the problems / claims customers raise.
+a. Filter by negative sentiment – flag reviews that contain a curated list of complaint keywords (e.g. 高い, 遅い, 最悪, 残念) or run a Japanese BERT‑based sentiment model to keep only negative sentences.
+b. Extract key n‑grams – build TF‑IDF or frequency counts (unigrams / bigrams) within those negative reviews to surface common pain‑points.
+c. Summarise – list the top ~10 phrases per cluster; optionally generate an LLM summary sentence such as “Portion size too small and wait times long.”
+d. Link back to examples – keep sample review IDs or texts so you can read raw feedback for context.
+e. Visualise – word clouds or bar charts of complaint phrases per cluster help spot patterns quickly.
