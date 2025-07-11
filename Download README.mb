@@ -1,0 +1,71 @@
+# Thesis Comment-Clustering Pipeline
+
+## Overview
+This project clusters customer comments (e.g. restaurant reviews) and surfaces the main problems customers mention.  It is designed to run locally in **VS Code** with disk-level caching so you never repeat expensive steps.
+
+| Stage | What happens |
+|-------|--------------|
+| 1 CSV → Parquet | Loads `most_commented_comments.csv`, coerces all columns to `string`, and stores a fast Parquet cache. |
+| 2 Clean & Tokenise | Removes punctuation, symbols, emoji, numbers; keeps only **nouns & adjectives**; applies custom stop words from `stop_words.py`; output cached. |
+| 3 Vectorise        | TF-IDF ➜ 100-dim **Truncated SVD**; both model & dense matrix cached. |
+| 4 Silhouette search| `MiniBatchKMeans` for *k* 2-10 using a sample-based silhouette; best *k* cached. |
+| 5 Final clustering | Fits `MiniBatchKMeans` with the cached best-k and stores the model. |
+| 6 Complaint mining | Extracts comments containing negative keywords (simple heuristic) and caches the result. |
+
+---
+
+## Requirements  
+* Python 3.9-3.11  
+* `pip install pandas scikit-learn janome regex matplotlib joblib`
+
+A virtual-env (`env/`) is recommended.
+
+---
+
+## Folder Layout
+```
+thesis-comments-project/
+│
+├─ data/
+│   ├─ most_commented_comments.csv      # raw input
+│   └─ stop_words.py                    # custom stop-word list (Python set)
+│
+├─ cache/      # auto-generated artefacts – safe to delete any time
+│
+├─ env/        # optional virtual-env
+└─ main.py     # master script (pipeline)
+```
+
+---
+
+## Quick Start
+```bash
+# 1. clone / open project in VS Code
+# 2. (optional) python -m venv env && source env/bin/activate
+pip install -r requirements.txt   # or install packages listed above
+python main.py                    # first run populates /cache
+```
+Subsequent runs reuse cached artefacts and finish in seconds.
+
+---
+
+## Customisation
+* **Stop words** – edit `data/stop_words.py` (Python list/tuple/set named `STOP_WORDS`).  
+* **Negative keywords** – adjust the `NEG = [...]` list inside `main.py` if your domain uses other complaint words.
+* **SVD dimensions / sample size / batch size** – tweak the constants near the top of each section.
+
+---
+
+## Restarting from scratch
+Delete the `/cache` folder and rerun `python main.py`.
+
+---
+
+## Troubleshooting
+* *ArrowInvalid* when writing Parquet → ensure all columns are read as `dtype=str` (already handled in the script).  
+* Memory issues → lower `batch_size` in `MiniBatchKMeans` or increase SVD compression (e.g. `n_components=50`).
+
+---
+
+## License  
+© 2025 Your Name.  MIT License.
