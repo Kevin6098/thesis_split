@@ -13,14 +13,15 @@ from sklearn.cluster            import MiniBatchKMeans
 from sklearn.metrics            import silhouette_score
 
 # ---------- configurable paths ----------
-DATA_DIR   = "data"
+DATA_DIR   = "."
 CACHE_DIR  = "cache"
 CSV_PATH   = os.path.join(DATA_DIR, "most_commented_comments.csv")
 STOP_PY    = os.path.join(DATA_DIR, "stop_words.py")
 TEXT_COL   = "comment"  # <-- Added: column name for text
 
 os.makedirs(CACHE_DIR, exist_ok=True)
-
+if not os.path.exists(CSV_PATH):
+    raise FileNotFoundError(f"Missing data file: {CSV_PATH}")
 # ---------- tiny helper ----------
 def cache_path(name): return os.path.join(CACHE_DIR, name)
 
