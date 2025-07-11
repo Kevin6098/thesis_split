@@ -11,7 +11,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition      import TruncatedSVD
 from sklearn.cluster            import MiniBatchKMeans
 from sklearn.metrics            import silhouette_score
-
+from pathlib import Path
+import chardet
 # ---------- configurable paths ----------
 DATA_DIR   = "."
 CACHE_DIR  = "cache"
@@ -34,73 +35,73 @@ if os.path.exists(parquet_file):
     df = pd.read_parquet(parquet_file)
     print("✅  loaded cached parquet")
 else:
-    # -- NEW: read every column as string to avoid mixed-dtype grief
-    df = pd.read_csv(CSV_PATH, dtype=str, low_memory=False)
-    
-    # OR: if you care about certain numeric columns, do this instead:
-    # df = pd.read_csv(CSV_PATH, low_memory=False)
-    # for col in df.select_dtypes(["object"]).columns:
-    #     df[col] = df[col].astype("string")
-    
+    #df = pd.read_csv(CSV_PATH, dtype=str, low_memory=False, encoding="utf-8", encoding_errors='ignore')
+
+    filename = "most_commented_comments.csv"
+    detected = chardet.detect(Path(filename).read_bytes())
+    # detected is something like {'encoding': 'utf-8', 'confidence': 0.99, 'language': ''}
+
+    encoding = detected.get("encoding")
+    assert encoding, "Unable to detect encoding, is it a binary file?"
+    print(f"Detected encoding: {encoding}")
+
+    df = pd.read_csv(filename, encoding=encoding)
+
     df.to_parquet(parquet_file, index=False)
     print("🆕  csv → parquet saved (all cols = string)")
+
+
 
 # ---------------------------------------------------------------
 # 2)  CLEAN & TOKENISE  (nouns+adjectives, drop し/numbers/symbols/emoji)
 # ---------------------------------------------------------------
 tok_cache = cache_path("tokenised.pkl")
 
-if os.path.exists(tok_cache):
-    with open(tok_cache, "rb") as f:
-        tokens_list = pickle.load(f)
-    print("✅  token list loaded")
-else:
-    from janome.tokenizer import Tokenizer
-    tkn = Tokenizer()
 
-    KEEP_POS     = {"名詞", "形容詞"}
-    HIRAGANA_1   = regex.compile(r"^\p{Hiragana}$")
-    RE_DIGIT     = regex.compile(r"^[\d０-９]+$")
-    KANJI_NUM    = set("一二三四五六七八九十百千万億兆")
+from janome.tokenizer import Tokenizer
+tkn = Tokenizer()
 
-    # ---------- load stop-words ----------
-    from importlib import util as _iu
-    spec = _iu.spec_from_file_location("sw", STOP_PY)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Could not load stop words from {STOP_PY}")
-    sw = _iu.module_from_spec(spec)
-    spec.loader.exec_module(sw)
-    ALL_STOPS = set(sw.STOP_WORDS).union({"し"})
+KEEP_POS     = {"名詞", "形容詞"}
+HIRAGANA_1   = regex.compile(r"^\p{Hiragana}$")
+RE_DIGIT     = regex.compile(r"^[\d０-９]+$")
+KANJI_NUM    = set("一二三四五六七八九十百千万億兆")
 
-    # ---------- ⚙️ NEW: regexes to scrub symbols & emoji ----------
-    SYMBOL_PAT = regex.compile(r"[\p{P}\p{S}]")               # all punct & symbols
-    EMOJI_PAT  = regex.compile(r"\p{Extended_Pictographic}")  # full emoji range
-    # -------------------------------------------------------------
+# ---------- load stop-words ----------
+from importlib import util as _iu
+spec = _iu.spec_from_file_location("sw", STOP_PY)
+if spec is None or spec.loader is None:
+    raise ImportError(f"Could not load stop words from {STOP_PY}")
+sw = _iu.module_from_spec(spec)
+spec.loader.exec_module(sw)
+ALL_STOPS = set(sw.STOP_WORDS).union({"し"})
 
-    def is_kanji_num(s): return s and all(ch in KANJI_NUM for ch in s)
+# ---------- ⚙️ NEW: regexes to scrub symbols & emoji ----------
+SYMBOL_PAT = regex.compile(r"[\p{P}\p{S}]")               # all punct & symbols
+EMOJI_PAT  = regex.compile(r"\p{Extended_Pictographic}")  # full emoji range
+# -------------------------------------------------------------
 
-    def clean(text: str) -> str:
-        if pd.isna(text): return ""
-        text = unicodedata.normalize("NFKC", str(text))
-        text = SYMBOL_PAT.sub(" ", text)      # ⚙️ remove punct/symbols
-        text = EMOJI_PAT.sub(" ", text)       # ⚙️ remove emoji
-        return re.sub(r"\s+", " ", text).strip()
+def is_kanji_num(s): return s and all(ch in KANJI_NUM for ch in s)
 
-    def tokens(text):
-        out=[]
-        for tk in tkn.tokenize(text):
-            if tk.part_of_speech.split(',')[0] not in KEEP_POS: continue
-            s=tk.surface
-            if HIRAGANA_1.match(s) or s in ALL_STOPS: continue
-            if RE_DIGIT.match(s)  or is_kanji_num(s): continue
-            out.append(s)
-        return out
+def clean(text: str) -> str:
+    if pd.isna(text): return ""
+    text = unicodedata.normalize("NFKC", str(text))
+    text = SYMBOL_PAT.sub(" ", text)      # ⚙️ remove punct/symbols
+    text = EMOJI_PAT.sub(" ", text)       # ⚙️ remove emoji
+    return re.sub(r"\s+", " ", text).strip()
 
-    df["clean"]  = df[TEXT_COL].apply(clean)
-    tokens_list  = df["clean"].apply(tokens).tolist()
-    with open(tok_cache, "wb") as f:
-        pickle.dump(tokens_list, f)
-    print("🆕  tokenised & cached")
+def tokens(text):
+    out=[]
+    for tk in tkn.tokenize(text):
+        if tk.part_of_speech.split(',')[0] not in KEEP_POS: continue
+        s=tk.surface
+        if HIRAGANA_1.match(s) or s in ALL_STOPS: continue
+        if RE_DIGIT.match(s)  or is_kanji_num(s): continue
+        out.append(s)
+    return out
+
+df["clean"]  = df[TEXT_COL].apply(clean)
+tokens_list  = df["clean"].apply(tokens).tolist()
+
 # join tokens for vectoriser
 joined = [" ".join(toks) for toks in tokens_list]
 
@@ -123,7 +124,9 @@ else:
     print("TF-IDF type:", type(X))
 
     # dimensionality reduction (100 dims)
-    svd = TruncatedSVD(100, random_state=42)
+    n_features = X.shape[1]
+    n_components = min(100, n_features - 1) if n_features > 1 else 1
+    svd = TruncatedSVD(n_components, random_state=42)
     X_small = svd.fit_transform(X)
     joblib.dump((tfidf, svd, X_small), vec_cache)
     print("🆕  tfidf & svd cached")
@@ -140,9 +143,10 @@ if os.path.exists(sil_cache):
     print("✅  best k cached =", best_k)
 else:
     scores = {}
-    for k in range(2,11):
+    max_k = min(10, X_small.shape[0])
+    for k in range(2, max_k + 1):
         mbk = MiniBatchKMeans(k, random_state=42,
-                              batch_size=2048, n_init=str(5), max_iter=100)
+                              batch_size=2048, n_init=5, max_iter=100)
         lbl = mbk.fit_predict(X_small)
         s   = silhouette_score(X_small, lbl,
                                sample_size=min(8000, len(lbl)),
@@ -165,7 +169,7 @@ if os.path.exists(clust_cache):
     print("✅  k-means model loaded")
 else:
     mbk = MiniBatchKMeans(best_k, random_state=42,
-                          batch_size=2048, n_init=str(10), max_iter=200)
+                          batch_size=2048, n_init=10, max_iter=200)
     mbk.fit(X_small)
     joblib.dump(mbk, clust_cache)
     print("🆕  k-means saved")
