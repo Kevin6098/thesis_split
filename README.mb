@@ -17,3 +17,4 @@ b. Extract key n‑grams – build TF‑IDF or frequency counts (unigrams / bigr
 c. Summarise – list the top ~10 phrases per cluster; optionally generate an LLM summary sentence such as “Portion size too small and wait times long.”
 d. Link back to examples – keep sample review IDs or texts so you can read raw feedback for context.
 e. Visualise – word clouds or bar charts of complaint phrases per cluster help spot patterns quickly.
+
