@@ -1,4 +1,9 @@
-STOP_WORDS = {
+# src/stop_words.py
+# ------------------------------------------------------------------
+# Master list of Japanese stop-words, interjections, HTML fragments,
+# emoji, filler phrases, etc.  Feel free to extend or prune.
+
+JP_STOPWORDS = {
     # 感動詞・間投詞
     "ああ", "あら", "ありゃ", "あれ", "おお", "おっと", "おや", "うん", "ええ", "えっ",
     "わあ", "わー", "うわ", "はっ", "やれやれ", "へえ", "ほう", "よし", "なるほど",
@@ -30,5 +35,9 @@ STOP_WORDS = {
     "＼(^o^)／", "(^_^)", "(^o^)", "※", "♪", "☆", "★",
     "♡", "❤", "😂", "🤣", "👍", "👎", "😊", "😢",
     # その他の頻出ノイズ
-    "とか", "なんか", "など", "なんて", "だとか", "とかで", "などの", "などが", "こと", "さん"
+    "とか", "なんか", "など", "なんて", "だとか", "とかで",
+    "などの", "などが", "こと", "さん"
 }
+
+# Back-compat alias — modules that still import STOP_WORDS will work
+STOP_WORDS = JP_STOPWORDS
