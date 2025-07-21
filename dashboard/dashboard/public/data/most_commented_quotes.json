@@ -1,0 +1,10 @@
+{
+  "0": [
+    {
+      "comment": "Mock quote",
+      "sentiment": "positive",
+      "sentiment_score": 0.1,
+      "topic": 0
+    }
+  ]
+}

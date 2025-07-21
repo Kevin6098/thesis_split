@@ -1,0 +1,48 @@
+{
+  "overall": {
+    "positive": 0.78,
+    "negative": 0.22
+  },
+  "byCluster": [
+    {
+      "cluster": 0,
+      "positive": 0.59,
+      "negative": 0.41
+    },
+    {
+      "cluster": 1,
+      "positive": 0.88,
+      "negative": 0.12
+    },
+    {
+      "cluster": 2,
+      "positive": 0.77,
+      "negative": 0.23
+    },
+    {
+      "cluster": 3,
+      "positive": 0.7,
+      "negative": 0.3
+    },
+    {
+      "cluster": 4,
+      "positive": 0.48,
+      "negative": 0.52
+    },
+    {
+      "cluster": 5,
+      "positive": 0.48,
+      "negative": 0.52
+    },
+    {
+      "cluster": 6,
+      "positive": 0.43,
+      "negative": 0.57
+    },
+    {
+      "cluster": 7,
+      "positive": 0.83,
+      "negative": 0.17
+    }
+  ]
+}

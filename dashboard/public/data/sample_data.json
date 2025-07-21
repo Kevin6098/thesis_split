@@ -1,0 +1,16 @@
+{
+  "note": "This is a placeholder file. Run the export script to generate actual data files.",
+  "required_files": [
+    "high_rating_silhouette.json",
+    "high_rating_cluster_distribution.json", 
+    "high_rating_lda_topics.json",
+    "high_rating_sentiment.json",
+    "high_rating_quotes.json",
+    "most_commented_silhouette.json",
+    "most_commented_cluster_distribution.json",
+    "most_commented_lda_topics.json", 
+    "most_commented_sentiment.json",
+    "most_commented_quotes.json"
+  ],
+  "export_command": "python dashboard/export_scripts/export_dashboard_data.py"
+}

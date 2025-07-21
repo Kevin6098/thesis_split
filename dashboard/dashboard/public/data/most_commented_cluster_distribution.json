@@ -1,0 +1,47 @@
+[
+  {
+    "cluster": 0,
+    "count": 202,
+    "percentage": 11.4
+  },
+  {
+    "cluster": 1,
+    "count": 279,
+    "percentage": 15.7
+  },
+  {
+    "cluster": 2,
+    "count": 192,
+    "percentage": 10.8
+  },
+  {
+    "cluster": 3,
+    "count": 114,
+    "percentage": 6.4
+  },
+  {
+    "cluster": 4,
+    "count": 206,
+    "percentage": 11.6
+  },
+  {
+    "cluster": 5,
+    "count": 171,
+    "percentage": 9.6
+  },
+  {
+    "cluster": 6,
+    "count": 288,
+    "percentage": 16.2
+  },
+  {
+    "cluster": 7,
+    "count": 120,
+    "percentage": 6.8
+  },
+  {
+    "cluster": 8,
+    "count": 202,
+    "percentage": 11.4
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "k": 2,
+    "silhouette": 0.497
+  },
+  {
+    "k": 3,
+    "silhouette": 0.429
+  },
+  {
+    "k": 4,
+    "silhouette": 0.317
+  },
+  {
+    "k": 5,
+    "silhouette": 0.282
+  },
+  {
+    "k": 6,
+    "silhouette": 0.372
+  },
+  {
+    "k": 7,
+    "silhouette": 0.482
+  },
+  {
+    "k": 8,
+    "silhouette": 0.49
+  },
+  {
+    "k": 9,
+    "silhouette": 0.451
+  },
+  {
+    "k": 10,
+    "silhouette": 0.3
+  },
+  {
+    "k": 11,
+    "silhouette": 0.268
+  },
+  {
+    "k": 12,
+    "silhouette": 0.329
+  }
+]

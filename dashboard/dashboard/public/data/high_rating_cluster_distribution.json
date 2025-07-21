@@ -1,0 +1,42 @@
+[
+  {
+    "cluster": 0,
+    "count": 202,
+    "percentage": 12.8
+  },
+  {
+    "cluster": 1,
+    "count": 279,
+    "percentage": 17.7
+  },
+  {
+    "cluster": 2,
+    "count": 192,
+    "percentage": 12.2
+  },
+  {
+    "cluster": 3,
+    "count": 114,
+    "percentage": 7.3
+  },
+  {
+    "cluster": 4,
+    "count": 206,
+    "percentage": 13.1
+  },
+  {
+    "cluster": 5,
+    "count": 171,
+    "percentage": 10.9
+  },
+  {
+    "cluster": 6,
+    "count": 288,
+    "percentage": 18.3
+  },
+  {
+    "cluster": 7,
+    "count": 120,
+    "percentage": 7.6
+  }
+]
