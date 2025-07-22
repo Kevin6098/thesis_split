@@ -39,14 +39,21 @@ export default function SearchEngine() {
       setLoading(true);
 
       try {
+        console.log(`Searching for: "${searchTerm}" in dataset: "${dataset}"`);
+        
         let query = supabase.from("all_reviews")
                            .select("*", { count: "exact" })
                            .ilike("comment", `%${searchTerm}%`);
 
-        if (dataset !== "all") query = query.eq("dataset", dataset);
+        if (dataset !== "all") {
+          query = query.eq("dataset", dataset);
+          console.log(`Filtering by dataset: ${dataset}`);
+        }
 
         const from = (page - 1) * PAGE_SIZE;
         const to   = from + PAGE_SIZE - 1;
+        console.log(`Pagination: from ${from} to ${to}`);
+        
         const { data, count, error } = await query.range(from, to);
 
         if (error) {
@@ -54,7 +61,10 @@ export default function SearchEngine() {
           setResults([]); 
           setTotal(0);
         } else {
-          console.log("Search results:", data, "Count:", count);
+          console.log(`✅ Search successful! Found ${count} total results, showing ${data?.length || 0} on this page`);
+          if (data && data.length > 0) {
+            console.log("Sample result:", data[0]);
+          }
           setResults(data ?? []); 
           setTotal(count ?? 0);
         }
@@ -131,8 +141,8 @@ export default function SearchEngine() {
         <>
           <Typography variant="h6" gutterBottom>{total} 件の結果が見つかりました</Typography>
           <Grid container spacing={2}>
-            {results.map(r => (
-              <Grid item xs={12} key={`${r.dataset}-${r.id}`}>
+            {results.map((r, index) => (
+              <Grid item xs={12} key={`${r.dataset}-${index}`}>
                 <Paper elevation={1} sx={{ p: 3 }}>
                   <Typography variant="body1" paragraph>{r.comment}</Typography>
                   <Divider sx={{ my: 2 }} />
