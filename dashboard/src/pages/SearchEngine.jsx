@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
   Box, Typography, TextField, Card, CardContent, Grid,
-  Pagination, Paper, Divider, Chip, FormControl, InputLabel, Select, MenuItem
+  Pagination, Paper, Divider, Chip, FormControl, InputLabel, Select, MenuItem,
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import { createClient } from "@supabase/supabase-js";
 
 // ─── Supabase client ────────────────────────────────────────
@@ -28,8 +30,24 @@ export default function SearchEngine() {
   const [results, setResults] = useState([]);
   const [total,   setTotal]   = useState(0);
   const [loading, setLoading] = useState(false);
+  
+  // Modal state for full comment preview
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSearch = (e) => { setSearchTerm(e.target.value); setPage(1); };
+
+  const handleCommentClick = (comment) => {
+    console.log('Full comment text:', comment.comment);
+    console.log('Comment length:', comment.comment.length);
+    setSelectedComment(comment);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedComment(null);
+  };
 
   // fetch from Supabase whenever search term / dataset / page changes
   useEffect(() => {
@@ -41,9 +59,11 @@ export default function SearchEngine() {
       try {
         console.log(`Searching for: "${searchTerm}" in dataset: "${dataset}"`);
         
+        // First, get the data without count to avoid timeout
         let query = supabase.from("all_reviews")
-                           .select("*", { count: "exact" })
-                           .ilike("comment", `%${searchTerm}%`);
+                           .select("*")
+                           .ilike("comment", `%${searchTerm}%`)
+                           .limit(1000); // Limit to prevent timeout
 
         if (dataset !== "all") {
           query = query.eq("dataset", dataset);
@@ -54,19 +74,22 @@ export default function SearchEngine() {
         const to   = from + PAGE_SIZE - 1;
         console.log(`Pagination: from ${from} to ${to}`);
         
-        const { data, count, error } = await query.range(from, to);
+        const { data, error } = await query.range(from, to);
+        
+        // Estimate total count based on current results
+        const estimatedTotal = data ? Math.min(data.length + (page - 1) * PAGE_SIZE, 1000) : 0;
 
         if (error) {
           console.error("Supabase error:", error); 
           setResults([]); 
           setTotal(0);
         } else {
-          console.log(`✅ Search successful! Found ${count} total results, showing ${data?.length || 0} on this page`);
+          console.log(`✅ Search successful! Found approximately ${estimatedTotal} total results, showing ${data?.length || 0} on this page`);
           if (data && data.length > 0) {
             console.log("Sample result:", data[0]);
           }
           setResults(data ?? []); 
-          setTotal(count ?? 0);
+          setTotal(estimatedTotal);
         }
       } catch (err) {
         console.error("Search error:", err);
@@ -143,13 +166,46 @@ export default function SearchEngine() {
           <Grid container spacing={2}>
             {results.map((r, index) => (
               <Grid item xs={12} key={`${r.dataset}-${index}`}>
-                <Paper elevation={1} sx={{ p: 3 }}>
-                  <Typography variant="body1" paragraph>{r.comment}</Typography>
+                <Paper 
+                  elevation={1} 
+                  sx={{ 
+                    p: 3, 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      elevation: 3,
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}
+                  onClick={() => handleCommentClick(r)}
+                >
+                  <Typography 
+                    variant="body1" 
+                    paragraph
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      lineHeight: 1.5,
+                      maxHeight: '4.5em'
+                    }}
+                  >
+                    {r.comment}
+                  </Typography>
                   <Divider sx={{ my: 2 }} />
-                  <Chip
-                    label={r.dataset === "high_rating" ? "高評価" : "最多コメント"}
-                    color="primary" size="small"
-                  />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Chip
+                      label={r.dataset === "high_rating" ? "高評価" : "最多コメント"}
+                      color="primary" 
+                      size="small"
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      クリックして全文を表示
+                    </Typography>
+                  </Box>
                 </Paper>
               </Grid>
             ))}
@@ -167,6 +223,89 @@ export default function SearchEngine() {
           )}
         </>
       )}
+
+      {/* Full Comment Preview Modal */}
+      <Dialog
+        open={modalOpen}
+        onClose={handleCloseModal}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            maxHeight: '90vh',
+            minHeight: '60vh',
+            display: 'flex',
+            flexDirection: 'column'
+          }
+        }}
+      >
+        <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6">
+            レビュー詳細
+          </Typography>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers sx={{ p: 3, flex: 1, overflow: 'auto', minHeight: 0 }}>
+          {selectedComment && (
+            <Box>
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  whiteSpace: 'pre-wrap', 
+                  lineHeight: 1.8,
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  mb: 2
+                }}
+              >
+                {selectedComment.comment}
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Chip
+                  label={selectedComment.dataset === "high_rating" ? "高評価" : "最多コメント"}
+                  color="primary"
+                  size="small"
+                />
+                {selectedComment.restaurant_id && (
+                  <Chip
+                    label={`店舗ID: ${selectedComment.restaurant_id}`}
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
+                {selectedComment.date && (
+                  <Chip
+                    label={`日付: ${selectedComment.date}`}
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
+                {selectedComment.price && (
+                  <Chip
+                    label={`価格: ${selectedComment.price}`}
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={handleCloseModal} color="primary">
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

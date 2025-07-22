@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON;
@@ -45,12 +45,13 @@ async function testConnection() {
       console.log('📊 Total records in database:', count);
     }
     
-    // Test 3: Search for "並"
-    console.log('\n=== Testing search for "並" ===');
+    // Test 3: Search for "美味しい"
+    console.log('\n=== Testing search for "美味しい" ===');
     const { data: searchResults, count: searchCount, error: searchError } = await supabase
       .from('all_reviews')
       .select('*', { count: 'exact' })
-      .ilike('comment', '%並%');
+      .ilike('comment', '%美味しい%')
+      .limit(5);
     
     if (searchError) {
       console.error('Search error:', searchError);
