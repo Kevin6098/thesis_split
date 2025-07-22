@@ -103,16 +103,16 @@ export default function RepresentativeQuotes({ dataset }) {
     <Box>
       <Box sx={{ mb: 3 }}>
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel>Select Cluster</InputLabel>
+          <InputLabel>クラスタ選択</InputLabel>
           <Select
             value={selectedCluster}
-            label="Select Cluster"
+            label="クラスタ選択"
             onChange={(e) => setSelectedCluster(e.target.value)}
           >
-            <MenuItem value="all">All Clusters</MenuItem>
+            <MenuItem value="all">全クラスタ</MenuItem>
             {clusters.map(cluster => (
               <MenuItem key={cluster} value={cluster}>
-                Cluster {cluster}
+                クラスタ {cluster}
               </MenuItem>
             ))}
           </Select>
@@ -121,7 +121,7 @@ export default function RepresentativeQuotes({ dataset }) {
 
       {quotes.length === 0 ? (
         <Typography color="text.secondary">
-          No quotes available for the selected cluster.
+          選択したクラスタの引用はありません。
         </Typography>
       ) : (
         <Grid container spacing={2}>
@@ -134,22 +134,22 @@ export default function RepresentativeQuotes({ dataset }) {
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
                     <Chip 
-                      label={quote.sentiment} 
+                      label={quote.sentiment === 'positive' ? 'ポジティブ' : 'ネガティブ'} 
                       color={quote.sentiment === 'positive' ? 'success' : 'error'} 
                       size="small" 
                     />
                     <Chip 
-                      label={`Score: ${quote.sentiment_score.toFixed(2)}`} 
+                      label={`スコア: ${quote.sentiment_score.toFixed(2)}`} 
                       variant="outlined" 
                       size="small" 
                     />
                     <Chip 
-                      label={`Topic ${quote.topic}`} 
+                      label={`トピック ${quote.topic}`} 
                       color="info" 
                       size="small" 
                     />
                     <Chip 
-                      label={dataset === 'high_rating' ? 'High Rating' : 'Most Commented'} 
+                      label={dataset === 'high_rating' ? '高評価' : '最多コメント'} 
                       color="primary" 
                       size="small" 
                     />
@@ -162,8 +162,7 @@ export default function RepresentativeQuotes({ dataset }) {
       )}
       
       <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
-        Representative quotes are selected based on their cluster membership and sentiment characteristics. 
-        The colored border indicates sentiment polarity.
+        代表的な引用はクラスタ所属と感情特性に基づいて選定されています。枠色は感情の極性を示します。
       </Typography>
     </Box>
   );

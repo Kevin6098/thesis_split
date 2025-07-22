@@ -6,68 +6,68 @@ import {
 
 const steps = [
   {
-    label: 'Data Collection & Preprocessing',
-    description: 'Collected Japanese restaurant reviews from high-rating and most-commented categories',
+    label: 'データ収集と前処理',
+    description: '高評価および最多コメントカテゴリから日本のレストランレビューを収集',
     details: [
-      'Raw data extraction from review platforms',
-      'Text cleaning and normalization',
-      'Japanese text preprocessing',
-      'Stop word removal and tokenization'
+      'レビュー プラットフォームからの生データ抽出',
+      'テキストのクレンジングと正規化',
+      '日本語テキストの前処理',
+      'ストップワード除去とトークン化'
     ],
     techniques: ['Text Cleaning', 'Tokenization', 'Normalization']
   },
   {
-    label: 'Feature Engineering',
-    description: 'Converted text data into numerical representations for machine learning',
+    label: '特徴量エンジニアリング',
+    description: '機械学習用にテキストデータを数値表現に変換',
     details: [
-      'TF-IDF vectorization',
-      'N-gram feature extraction',
-      'Dimensionality consideration',
-      'Feature selection optimization'
+      'TF-IDF ベクトル化',
+      'N-gram 特徴抽出',
+      '次元数の検討',
+      '特徴量選択の最適化'
     ],
     techniques: ['TF-IDF', 'Vectorization', 'N-grams']
   },
   {
-    label: 'K-means Clustering',
-    description: 'Applied unsupervised clustering to group similar reviews',
+    label: 'K-means クラスタリング',
+    description: '教師なしクラスタリングを適用して類似レビューをグループ化',
     details: [
-      'Optimal cluster number determination using silhouette analysis',
-      'K-means algorithm implementation',
-      'Cluster validation and interpretation',
-      'Representative sample extraction'
+      'シルエット分析による最適クラスタ数の決定',
+      'K-means アルゴリズムの実装',
+      'クラスタの検証と解釈',
+      '代表サンプルの抽出'
     ],
     techniques: ['K-means', 'Silhouette Analysis', 'Cluster Validation']
   },
   {
-    label: 'Topic Modeling (LDA)',
-    description: 'Discovered latent topics using Latent Dirichlet Allocation',
+    label: 'トピックモデリング（LDA）',
+    description: 'Latent Dirichlet Allocation を用いて潜在トピックを抽出',
     details: [
-      'LDA model training and optimization',
-      'Topic coherence evaluation',
-      'Topic-document probability distribution',
-      'Topic labeling and interpretation'
+      'LDA モデルの学習と最適化',
+      'トピック一貫性の評価',
+      'トピック–ドキュメント確率分布',
+      'トピックのラベリングと解釈'
     ],
     techniques: ['LDA', 'Topic Modeling', 'Probabilistic Analysis']
   },
   {
-    label: 'Sentiment Analysis',
-    description: 'Analyzed sentiment patterns using rule-based approaches',
+    label: '感情分析',
+    description: 'ルールベース手法で感情パターンを分析',
     details: [
-      'Japanese negative keyword identification',
-      'Rule-based sentiment classification',
-      'Sentiment score computation',
-      'Sentiment distribution analysis'
+      '日本語ネガティブキーワードの識別',
+      'ルールベースの感情分類',
+      '感情スコアの算出',
+      '感情分布の分析'
     ],
     techniques: ['Rule-based Classification', 'Sentiment Scoring']
   },
   {
-    label: 'Visualization & Analysis',
-    description: 'Created interactive visualizations and comprehensive analysis',
+    label: '可視化と分析',
+    description: 'インタラクティブな可視化と包括的解析を作成',
     details: [
-      'Cluster distribution visualization',
-      'Topic prevalence analysis',
-      'Heatmap generation for cluster-topic relationships',
-      'Interactive dashboard development'
+      'クラスタ分布の可視化',
+      'トピック出現頻度の分析',
+      'クラスタ・トピック関係のヒートマップ生成',
+      'インタラクティブダッシュボードの開発'
     ],
     techniques: ['Data Visualization', 'Interactive Charts', 'Statistical Analysis']
   }
@@ -77,7 +77,7 @@ export default function ResearchSteps() {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        Research Methodology
+        研究手法
       </Typography>
       
       <Grid container spacing={3}>
@@ -85,7 +85,7 @@ export default function ResearchSteps() {
           <Card elevation={3}>
             <CardContent sx={{ p: 4 }}>
               <Stepper orientation="vertical">
-                {steps.map((step, index) => (
+                {steps.map((step) => (
                   <Step key={step.label} active={true}>
                     <StepLabel>
                       <Typography variant="h6" color="primary">
@@ -127,20 +127,20 @@ export default function ResearchSteps() {
         <Grid item xs={12} md={4}>
           <Paper elevation={2} sx={{ p: 3, bgcolor: '#f8f9fa' }}>
             <Typography variant="h6" gutterBottom color="primary">
-              Research Objectives
+              研究目的
             </Typography>
             <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
-              <li>Identify patterns in customer feedback</li>
-              <li>Compare high-rating vs most-commented reviews</li>
-              <li>Extract meaningful topics from reviews</li>
-              <li>Analyze sentiment distributions</li>
-              <li>Provide actionable insights for restaurants</li>
+              <li>顧客フィードバックのパターンを特定</li>
+              <li>高評価レビューと最多コメントレビューを比較</li>
+              <li>レビューから有益なトピックを抽出</li>
+              <li>感情分布を分析</li>
+              <li>レストランに対する実践的な洞察を提供</li>
             </Box>
           </Paper>
           
           <Paper elevation={2} sx={{ p: 3, mt: 2, bgcolor: '#f0f8ff' }}>
             <Typography variant="h6" gutterBottom color="primary">
-              Technical Stack
+              技術スタック
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Chip label="Python" size="small" />

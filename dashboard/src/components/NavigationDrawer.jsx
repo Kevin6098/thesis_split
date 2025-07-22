@@ -49,7 +49,7 @@ export default function NavigationDrawer() {
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-            Thesis Analysis
+            '論文分析'
           </Typography>
         </Box>
       </Toolbar>

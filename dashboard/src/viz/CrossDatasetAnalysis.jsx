@@ -12,14 +12,14 @@ export default function CrossDatasetAnalysis() {
       try {
         // Mock cross-dataset analysis data
         const scatterData = [
-          { topic: 0, high_rating_prevalence: 9.8, most_commented_prevalence: 11.2, label: 'Food Quality', avg_sentiment_hr: 0.85, avg_sentiment_mc: 0.55 },
-          { topic: 1, high_rating_prevalence: 20.7, most_commented_prevalence: 19.9, label: 'Service', avg_sentiment_hr: 0.92, avg_sentiment_mc: 0.48 },
-          { topic: 2, high_rating_prevalence: 11.0, most_commented_prevalence: 14.6, label: 'Pricing', avg_sentiment_hr: 0.65, avg_sentiment_mc: 0.30 },
-          { topic: 3, high_rating_prevalence: 16.6, most_commented_prevalence: 13.6, label: 'Booking', avg_sentiment_hr: 0.88, avg_sentiment_mc: 0.70 },
-          { topic: 4, high_rating_prevalence: 8.1, most_commented_prevalence: 9.6, label: 'Cuisine', avg_sentiment_hr: 0.95, avg_sentiment_mc: 0.68 },
-          { topic: 5, high_rating_prevalence: 12.0, most_commented_prevalence: 12.0, label: 'Atmosphere', avg_sentiment_hr: 0.82, avg_sentiment_mc: 0.80 },
-          { topic: 6, high_rating_prevalence: 11.9, most_commented_prevalence: 10.4, label: 'Staff', avg_sentiment_hr: 0.90, avg_sentiment_mc: 0.85 },
-          { topic: 7, high_rating_prevalence: 9.9, most_commented_prevalence: 8.5, label: 'Location', avg_sentiment_hr: 0.75, avg_sentiment_mc: 0.72 }
+          { topic: 0, high_rating_prevalence: 9.8, most_commented_prevalence: 11.2, label: '料理の質', avg_sentiment_hr: 0.85, avg_sentiment_mc: 0.55 },
+          { topic: 1, high_rating_prevalence: 20.7, most_commented_prevalence: 19.9, label: 'サービス', avg_sentiment_hr: 0.92, avg_sentiment_mc: 0.48 },
+          { topic: 2, high_rating_prevalence: 11.0, most_commented_prevalence: 14.6, label: '価格', avg_sentiment_hr: 0.65, avg_sentiment_mc: 0.30 },
+          { topic: 3, high_rating_prevalence: 16.6, most_commented_prevalence: 13.6, label: '予約・時間', avg_sentiment_hr: 0.88, avg_sentiment_mc: 0.70 },
+          { topic: 4, high_rating_prevalence: 8.1, most_commented_prevalence: 9.6, label: '料理ジャンル', avg_sentiment_hr: 0.95, avg_sentiment_mc: 0.68 },
+          { topic: 5, high_rating_prevalence: 12.0, most_commented_prevalence: 12.0, label: '雰囲気', avg_sentiment_hr: 0.82, avg_sentiment_mc: 0.80 },
+          { topic: 6, high_rating_prevalence: 11.9, most_commented_prevalence: 10.4, label: 'スタッフ', avg_sentiment_hr: 0.90, avg_sentiment_mc: 0.85 },
+          { topic: 7, high_rating_prevalence: 9.9, most_commented_prevalence: 8.5, label: '立地', avg_sentiment_hr: 0.75, avg_sentiment_mc: 0.72 }
         ];
 
         const timelineData = [
@@ -80,7 +80,7 @@ export default function CrossDatasetAnalysis() {
         .attr('transform', `translate(${width / 2}, ${height + 50})`)
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('High-Rating Prevalence (%)');
+        .text('高評価出現率 (%)');
 
       g.append('text')
         .attr('transform', 'rotate(-90)')
@@ -89,7 +89,7 @@ export default function CrossDatasetAnalysis() {
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('Most-Commented Prevalence (%)');
+        .text('最多コメント出現率 (%)');
 
       // Add diagonal reference line
       const diagonal = d3.line()
@@ -128,7 +128,7 @@ export default function CrossDatasetAnalysis() {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-          tooltip.html(`${d.label}<br/>HR: ${d.high_rating_prevalence}%<br/>MC: ${d.most_commented_prevalence}%<br/>Avg Sentiment: ${((d.avg_sentiment_hr + d.avg_sentiment_mc) / 2 * 100).toFixed(1)}%`)
+          tooltip.html(`${d.label}<br/>高評価: ${d.high_rating_prevalence}%<br/>最多コメント: ${d.most_commented_prevalence}%<br/>平均感情: ${((d.avg_sentiment_hr + d.avg_sentiment_mc) / 2 * 100).toFixed(1)}%`)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 10) + 'px');
         })
@@ -179,7 +179,7 @@ export default function CrossDatasetAnalysis() {
       // Add axes
       g.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale));
+        .call(d3.axisBottom(xScale).tickFormat(d => d === 'High Rating' ? '高評価' : d === 'Most Commented' ? '最多コメント' : d));
 
       g.append('g')
         .call(d3.axisLeft(yScale).tickFormat(d3.format('.0%')));
@@ -189,7 +189,7 @@ export default function CrossDatasetAnalysis() {
         .attr('transform', `translate(${width / 2}, ${height + 50})`)
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('Dataset');
+        .text('データセット');
 
       g.append('text')
         .attr('transform', 'rotate(-90)')
@@ -198,7 +198,7 @@ export default function CrossDatasetAnalysis() {
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('Overall Sentiment');
+        .text('全体感情');
 
       // Add bars
       g.selectAll('.bar')
@@ -222,7 +222,7 @@ export default function CrossDatasetAnalysis() {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-          tooltip.html(`${d.dataset}<br/>Sentiment: ${(d.overall_sentiment * 100).toFixed(1)}%<br/>Top Topics: ${d.engagement_topics.join(', ')}`)
+          tooltip.html(`${d.dataset}<br/>感情: ${(d.overall_sentiment * 100).toFixed(1)}%<br/>注目トピック: ${d.engagement_topics.join(', ')}`)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 10) + 'px');
         })
@@ -261,13 +261,11 @@ export default function CrossDatasetAnalysis() {
         <Grid item xs={12} md={8}>
           <Paper elevation={1} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Topic Prevalence Correlation
+              トピック出現率相関
             </Typography>
             <Box ref={scatterRef} />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Each point represents a topic. Position shows prevalence in each dataset, 
-              color indicates average sentiment. Points above the diagonal line are more 
-              prevalent in most-commented reviews.
+              各点はトピックを表します。位置は各データセットでの出現率、色は平均感情を示します。対角線より上は最多コメントでより多く現れるトピックです。
             </Typography>
           </Paper>
         </Grid>
@@ -275,12 +273,11 @@ export default function CrossDatasetAnalysis() {
         <Grid item xs={12} md={4}>
           <Paper elevation={1} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Overall Sentiment Comparison
+              全体感情比較
             </Typography>
             <Box ref={lineRef} />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Comparison of overall sentiment between the two datasets. 
-              Hover for engagement topic details.
+              2つのデータセット間の全体感情の比較。ホバーで注目トピックの詳細が表示されます。
             </Typography>
           </Paper>
         </Grid>

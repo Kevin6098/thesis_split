@@ -75,8 +75,8 @@ export default function SentimentAnalysis({ dataset }) {
         .outerRadius(radius);
 
       const data = [
-        { label: 'Positive', value: overallData.positive },
-        { label: 'Negative', value: overallData.negative }
+        { label: 'ポジティブ', value: overallData.positive },
+        { label: 'ネガティブ', value: overallData.negative }
       ];
 
       const arcs = g.selectAll('.arc')
@@ -157,7 +157,7 @@ export default function SentimentAnalysis({ dataset }) {
         .attr('transform', `translate(${width / 2}, ${height + 35})`)
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('Cluster');
+        .text('クラスタ');
 
       g.append('text')
         .attr('transform', 'rotate(-90)')
@@ -166,7 +166,7 @@ export default function SentimentAnalysis({ dataset }) {
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .style('font-size', '12px')
-        .text('Positive Sentiment Ratio');
+        .text('ポジティブ感情比率');
 
       // Add bars
       g.selectAll('.bar')
@@ -192,7 +192,7 @@ export default function SentimentAnalysis({ dataset }) {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-          tooltip.html(`Cluster ${d.cluster}<br/>Positive: ${(d.positive * 100).toFixed(1)}%<br/>Negative: ${(d.negative * 100).toFixed(1)}%`)
+          tooltip.html(`クラスタ ${d.cluster}<br/>ポジティブ: ${(d.positive * 100).toFixed(1)}%<br/>ネガティブ: ${(d.negative * 100).toFixed(1)}%`)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 10) + 'px');
         })
@@ -231,11 +231,11 @@ export default function SentimentAnalysis({ dataset }) {
         <Grid item xs={12} md={6}>
           <Paper elevation={1} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Overall Sentiment Distribution
+              全体感情分布
             </Typography>
             <Box ref={pieRef} />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {dataset === 'high_rating' ? 'High-rating' : 'Most-commented'} reviews sentiment breakdown
+              {dataset === 'high_rating' ? '高評価' : '最多コメント'}レビューの感情内訳
             </Typography>
           </Paper>
         </Grid>
@@ -243,11 +243,11 @@ export default function SentimentAnalysis({ dataset }) {
         <Grid item xs={12} md={6}>
           <Paper elevation={1} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Sentiment by Cluster
+              クラスタ別感情
             </Typography>
             <Box ref={barRef} />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Positive sentiment ratio across different clusters
+              各クラスタごとのポジティブ感情比率
             </Typography>
           </Paper>
         </Grid>

@@ -35,40 +35,40 @@ export default function HighRating() {
   return (
     <Box sx={{ maxWidth: 1400, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3, fontWeight: 'bold' }}>
-        High-Rating Results
+        高評価レビュー結果
       </Typography>
       
       <Card elevation={3}>
         <CardContent>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="high-rating analysis tabs">
-              <Tab label="Silhouette Analysis" />
-              <Tab label="Clustering Results" />
-              <Tab label="LDA Topics" />
-              <Tab label="Topic-Cluster Heatmap" />
-              <Tab label="Sentiment Analysis" />
-              <Tab label="Representative Quotes" />
+            <Tabs value={value} onChange={handleChange} aria-label="高評価レビュー分析タブ">
+              <Tab label="シルエット分析" />
+              <Tab label="クラスタリング結果" />
+              <Tab label="LDAトピック" />
+              <Tab label="トピック-クラスタヒートマップ" />
+              <Tab label="感情分析" />
+              <Tab label="代表的なレビュー" />
             </Tabs>
           </Box>
           
           <TabPanel value={value} index={0}>
             <Typography variant="h5" gutterBottom color="primary">
-              Silhouette Analysis for Optimal K
+              最適クラスタ数のシルエット分析
             </Typography>
             <Typography variant="body1" paragraph>
-              Silhouette analysis helps determine the optimal number of clusters by measuring 
-              how similar each point is to its own cluster compared to other clusters.
+              シルエット分析は、各データポイントが所属するクラスタと
+              他クラスタとの類似度を比較することで、最適なクラスタ数を決定するのに役立ちます。
             </Typography>
             <SilhouetteChart dataset="high_rating" />
           </TabPanel>
           
           <TabPanel value={value} index={1}>
             <Typography variant="h5" gutterBottom color="primary">
-              Cluster Distribution
+              クラスタ分布
             </Typography>
             <Typography variant="body1" paragraph>
-              Distribution of reviews across different clusters, showing the relative size 
-              and characteristics of each customer segment.
+              各クラスタに属するレビュー数と、その特徴を可視化し、
+              顧客セグメントの規模と特性を示します。
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} lg={8}>
@@ -78,11 +78,11 @@ export default function HighRating() {
                 <Card elevation={1} sx={{ bgcolor: '#f8f9fa', height: 'fit-content' }}>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      Cluster Insights
+                      クラスタの洞察
                     </Typography>
                     <Typography variant="body2">
-                      Each cluster represents a distinct pattern in customer feedback, 
-                      helping identify different types of dining experiences and preferences.
+                      各クラスタは顧客フィードバックの独自パターンを表し、
+                      多様な食事体験や嗜好を把握するのに役立ちます。
                     </Typography>
                   </CardContent>
                 </Card>
@@ -92,41 +92,43 @@ export default function HighRating() {
           
           <TabPanel value={value} index={2}>
             <Typography variant="h5" gutterBottom color="primary">
-              LDA Topic Analysis
+              LDAトピック分析
             </Typography>
             <Typography variant="body1" paragraph>
-              Latent Dirichlet Allocation reveals the underlying topics discussed in high-rating reviews.
+              Latent Dirichlet Allocation により、高評価レビューに潜む
+              主要トピックを抽出します。
             </Typography>
             <LDATopics dataset="high_rating" />
           </TabPanel>
           
           <TabPanel value={value} index={3}>
             <Typography variant="h5" gutterBottom color="primary">
-              Cluster-Topic Relationship Heatmap
+              クラスタ-トピック関係ヒートマップ
             </Typography>
             <Typography variant="body1" paragraph>
-              This heatmap shows how different clusters align with discovered topics, 
-              revealing the relationship between customer segments and discussion themes.
+              各クラスタがどのトピックと関連しているかを示し、
+              顧客セグメントと議論テーマの関係性を明らかにします。
             </Typography>
             <TopicHeatmap dataset="high_rating" />
           </TabPanel>
           
           <TabPanel value={value} index={4}>
             <Typography variant="h5" gutterBottom color="primary">
-              Sentiment Distribution
+              感情分布
             </Typography>
             <Typography variant="body1" paragraph>
-              Analysis of sentiment patterns across clusters and topics in high-rating reviews.
+              高評価レビュー内のクラスタおよびトピックごとの
+              感情パターンを分析します。
             </Typography>
             <SentimentAnalysis dataset="high_rating" />
           </TabPanel>
           
           <TabPanel value={value} index={5}>
             <Typography variant="h5" gutterBottom color="primary">
-              Representative Quotes
+              代表的なレビュー引用
             </Typography>
             <Typography variant="body1" paragraph>
-              Sample reviews that best represent each cluster's characteristics and themes.
+              各クラスタの特徴とテーマを最もよく表すサンプルレビューを紹介します。
             </Typography>
             <RepresentativeQuotes dataset="high_rating" />
           </TabPanel>

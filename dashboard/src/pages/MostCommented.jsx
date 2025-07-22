@@ -35,39 +35,38 @@ export default function MostCommented() {
   return (
     <Box sx={{ maxWidth: 1400, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3, fontWeight: 'bold' }}>
-        Most-Commented Results
+        最多コメントレビュー結果
       </Typography>
       
       <Card elevation={3}>
         <CardContent>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="most-commented analysis tabs">
-              <Tab label="Silhouette Analysis" />
-              <Tab label="Clustering Results" />
-              <Tab label="LDA Topics" />
-              <Tab label="Topic-Cluster Heatmap" />
-              <Tab label="Sentiment Analysis" />
-              <Tab label="Representative Quotes" />
+            <Tabs value={value} onChange={handleChange} aria-label="最多コメントレビュー分析タブ">
+              <Tab label="シルエット分析" />
+              <Tab label="クラスタリング結果" />
+              <Tab label="LDAトピック" />
+              <Tab label="トピック-クラスタヒートマップ" />
+              <Tab label="感情分析" />
+              <Tab label="代表的なレビュー" />
             </Tabs>
           </Box>
           
           <TabPanel value={value} index={0}>
             <Typography variant="h5" gutterBottom color="primary">
-              Silhouette Analysis for Optimal K
+              最適クラスタ数のシルエット分析
             </Typography>
             <Typography variant="body1" paragraph>
-              Silhouette analysis for most-commented reviews to determine the optimal clustering configuration.
+              最多コメントレビューに対するシルエット分析で、最適なクラスタ設定を決定します。
             </Typography>
             <SilhouetteChart dataset="most_commented" />
           </TabPanel>
           
           <TabPanel value={value} index={1}>
             <Typography variant="h5" gutterBottom color="primary">
-              Cluster Distribution
+              クラスタ分布
             </Typography>
             <Typography variant="body1" paragraph>
-              Distribution of most-commented reviews across clusters, revealing engagement patterns 
-              and discussion drivers.
+              最多コメントレビューをクラスタごとに分布させ、エンゲージメントのパターンと議論の要因を明らかにします。
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} lg={8}>
@@ -77,11 +76,10 @@ export default function MostCommented() {
                 <Card elevation={1} sx={{ bgcolor: '#f8f9fa', height: 'fit-content' }}>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      Engagement Insights
+                      エンゲージメントの洞察
                     </Typography>
                     <Typography variant="body2">
-                      Most-commented reviews often reflect controversial opinions, 
-                      exceptional experiences, or detailed discussions about specific aspects.
+                      最多コメントレビューは、多くの場合、賛否両論の意見、卓越した体験、または特定の側面についての詳細な議論を反映しています。
                     </Typography>
                   </CardContent>
                 </Card>
@@ -91,40 +89,40 @@ export default function MostCommented() {
           
           <TabPanel value={value} index={2}>
             <Typography variant="h5" gutterBottom color="primary">
-              LDA Topic Analysis
+              LDAトピック分析
             </Typography>
             <Typography variant="body1" paragraph>
-              Topic analysis of most-commented reviews reveals what drives customer engagement and discussion.
+              最多コメントレビューのトピック分析により、顧客のエンゲージメントと議論を促進する要因が明らかになります。
             </Typography>
             <LDATopics dataset="most_commented" />
           </TabPanel>
           
           <TabPanel value={value} index={3}>
             <Typography variant="h5" gutterBottom color="primary">
-              Cluster-Topic Relationship Heatmap
+              クラスタ-トピック関係ヒートマップ
             </Typography>
             <Typography variant="body1" paragraph>
-              Relationship between customer engagement clusters and discussion topics in most-commented reviews.
+              最多コメントレビューにおける顧客エンゲージメントクラスタと議論トピックの関係を示します。
             </Typography>
             <TopicHeatmap dataset="most_commented" />
           </TabPanel>
           
           <TabPanel value={value} index={4}>
             <Typography variant="h5" gutterBottom color="primary">
-              Sentiment Distribution
+              感情分布
             </Typography>
             <Typography variant="body1" paragraph>
-              Sentiment patterns in most-commented reviews, showing how engagement correlates with sentiment.
+              最多コメントレビューにおける感情パターンを分析し、エンゲージメントと感情の相関を示します。
             </Typography>
             <SentimentAnalysis dataset="most_commented" />
           </TabPanel>
           
           <TabPanel value={value} index={5}>
             <Typography variant="h5" gutterBottom color="primary">
-              Representative Quotes
+              代表的なレビュー引用
             </Typography>
             <Typography variant="body1" paragraph>
-              Sample reviews that exemplify the characteristics of each cluster in most-commented data.
+              最多コメントデータにおける各クラスタの特徴を示すサンプルレビューを紹介します。
             </Typography>
             <RepresentativeQuotes dataset="most_commented" />
           </TabPanel>

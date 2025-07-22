@@ -43,7 +43,7 @@ export default function App() {
           >
             <Toolbar>
               <Typography variant="h6" noWrap component="div">
-                Japanese Restaurant Reviews Analysis Dashboard
+                飲食店における口コミ数と評価の関係性の分析
               </Typography>
             </Toolbar>
           </AppBar>

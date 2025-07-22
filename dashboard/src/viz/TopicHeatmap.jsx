@@ -70,7 +70,7 @@ export default function TopicHeatmap({ dataset }) {
         // Add axes
         g.append('g')
           .attr('transform', `translate(0,${height})`)
-          .call(d3.axisBottom(xScale).tickFormat(d => `Topic ${d}`))
+          .call(d3.axisBottom(xScale).tickFormat(d => `トピック ${d}`))
           .selectAll('text')
           .style('text-anchor', 'end')
           .attr('dx', '-.8em')
@@ -78,14 +78,14 @@ export default function TopicHeatmap({ dataset }) {
           .attr('transform', 'rotate(-45)');
 
         g.append('g')
-          .call(d3.axisLeft(yScale).tickFormat(d => `Cluster ${d}`));
+          .call(d3.axisLeft(yScale).tickFormat(d => `クラスタ ${d}`));
 
         // Add axis labels
         g.append('text')
           .attr('transform', `translate(${width / 2}, ${height + 50})`)
           .style('text-anchor', 'middle')
           .style('font-size', '12px')
-          .text('LDA Topics');
+          .text('LDAトピック');
 
         g.append('text')
           .attr('transform', 'rotate(-90)')
@@ -94,7 +94,7 @@ export default function TopicHeatmap({ dataset }) {
           .attr('dy', '1em')
           .style('text-anchor', 'middle')
           .style('font-size', '12px')
-          .text('K-means Clusters');
+          .text('K-meansクラスタ');
 
         // Add heatmap rectangles
         g.selectAll('.cell')
@@ -120,7 +120,7 @@ export default function TopicHeatmap({ dataset }) {
               .style('font-size', '12px')
               .style('pointer-events', 'none');
 
-            tooltip.html(`Cluster ${d[0]} → Topic ${d[1]}<br/>Proportion: ${(d[2] * 100).toFixed(1)}%`)
+            tooltip.html(`クラスタ ${d[0]} → トピック ${d[1]}<br/>割合: ${(d[2] * 100).toFixed(1)}%`)
               .style('left', (event.pageX + 10) + 'px')
               .style('top', (event.pageY - 10) + 'px');
           })
@@ -182,7 +182,7 @@ export default function TopicHeatmap({ dataset }) {
           .attr('y', -5)
           .attr('text-anchor', 'middle')
           .style('font-size', '11px')
-          .text('Topic Proportion');
+          .text('トピック割合');
 
         setError(null);
       } catch (err) {
@@ -205,11 +205,11 @@ export default function TopicHeatmap({ dataset }) {
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Cluster-Topic Heatmap - {dataset === 'high_rating' ? 'High Rating' : 'Most Commented'}
+        クラスタ・トピック ヒートマップ - {dataset === 'high_rating' ? '高評価' : '最多コメント'}
       </Typography>
       <Box ref={svgRef} />
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-        Shows the proportion of each topic within each cluster. Darker colors indicate higher proportions.
+        各クラスタ内の各トピックの割合を示します。色が濃いほど割合が高いことを表します。
       </Typography>
     </Paper>
   );

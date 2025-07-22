@@ -7,7 +7,7 @@ export default function MixedTopics() {
   return (
     <Box sx={{ maxWidth: 1400, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        Mixed Topics Analysis
+        複合トピック分析
       </Typography>
       
       <Grid container spacing={4}>
@@ -15,11 +15,10 @@ export default function MixedTopics() {
           <Card elevation={3}>
             <CardContent>
               <Typography variant="h5" gutterBottom color="primary">
-                Cross-Dataset Topic Comparison
+                データセット横断トピック比較
               </Typography>
               <Typography variant="body1" paragraph>
-                Comparative analysis of topics discovered in high-rating versus most-commented reviews, 
-                revealing differences in customer focus and discussion patterns.
+                高評価レビューと最多コメントレビューで抽出されたトピックを比較分析し、顧客の関心領域と議論パターンの違いを明らかにします。
               </Typography>
               <TopicComparison />
             </CardContent>
@@ -30,11 +29,10 @@ export default function MixedTopics() {
           <Card elevation={3}>
             <CardContent>
               <Typography variant="h5" gutterBottom color="primary">
-                Integrated Analysis Dashboard
+                統合分析ダッシュボード
               </Typography>
               <Typography variant="body1" paragraph>
-                Comprehensive view combining insights from both datasets to understand 
-                the complete landscape of customer feedback patterns.
+                両データセットの洞察を組み合わせ、顧客フィードバックパターンの全体像を把握する包括的ビューです。
               </Typography>
               <CrossDatasetAnalysis />
             </CardContent>
@@ -45,14 +43,14 @@ export default function MixedTopics() {
           <Card elevation={2} sx={{ bgcolor: '#f8f9fa' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom color="primary">
-                Key Findings
+                主な発見
               </Typography>
               <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
-                <li>High-rating reviews focus more on food quality and service</li>
-                <li>Most-commented reviews discuss pricing and value more frequently</li>
-                <li>Negative sentiment is more prevalent in most-commented reviews</li>
-                <li>Certain topics appear consistently across both datasets</li>
-                <li>Restaurant atmosphere is discussed differently in each dataset</li>
+                <li>高評価レビューは料理の質とサービスにより重点を置く</li>
+                <li>最多コメントレビューは価格と価値についてより頻繁に議論する</li>
+                <li>否定的感情は最多コメントレビューでより顕著である</li>
+                <li>特定のトピックは両データセットで一貫して現れる</li>
+                <li>レストランの雰囲気は各データセットで異なる形で議論される</li>
               </Box>
             </CardContent>
           </Card>
@@ -62,14 +60,14 @@ export default function MixedTopics() {
           <Card elevation={2} sx={{ bgcolor: '#f0f8ff' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom color="primary">
-                Business Implications
+                ビジネスへの示唆
               </Typography>
               <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
-                <li>Focus on food quality to achieve high ratings</li>
-                <li>Address pricing concerns to reduce negative comments</li>
-                <li>Monitor most-commented reviews for improvement areas</li>
-                <li>Leverage high-rating review patterns for marketing</li>
-                <li>Balance quality and value proposition effectively</li>
+                <li>高評価を得るために料理の質に重点を置く</li>
+                <li>価格に関する懸念に対応して否定的コメントを減らす</li>
+                <li>改善点を把握するため最多コメントレビューを監視する</li>
+                <li>高評価レビューのパターンをマーケティングに活用する</li>
+                <li>質と価値提案のバランスを効果的に取る</li>
               </Box>
             </CardContent>
           </Card>

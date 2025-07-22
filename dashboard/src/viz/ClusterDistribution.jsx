@@ -79,12 +79,12 @@ export default function ClusterDistribution({ dataset }) {
           .attr('x', 0 - (height / 2))
           .attr('dy', '1em')
           .style('text-anchor', 'middle')
-          .text('Number of Reviews');
+          .text('レビュー数');
 
         g.append('text')
           .attr('transform', `translate(${width / 2}, ${height + margin.bottom - 10})`)
           .style('text-anchor', 'middle')
-          .text('Cluster ID');
+          .text('クラスタID');
 
         // Add bars
         g.selectAll('.bar')
@@ -113,7 +113,7 @@ export default function ClusterDistribution({ dataset }) {
               .style('font-size', '12px')
               .style('pointer-events', 'none');
 
-            tooltip.html(`Cluster ${d.cluster}<br/>Count: ${d.count}<br/>Percentage: ${d.percentage}%`)
+            tooltip.html(`クラスタ ${d.cluster}<br/>件数: ${d.count}<br/>割合: ${d.percentage}%`)
               .style('left', (event.pageX + 10) + 'px')
               .style('top', (event.pageY - 10) + 'px');
           })
@@ -155,11 +155,11 @@ export default function ClusterDistribution({ dataset }) {
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Cluster Distribution - {dataset === 'high_rating' ? 'High Rating' : 'Most Commented'}
+        クラスタ分布 - {dataset === 'high_rating' ? '高評価' : '最多コメント'}
       </Typography>
       <Box ref={svgRef} />
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-        Distribution of reviews across different clusters. Hover over bars for details.
+        各クラスタにおけるレビューの分布。バーにカーソルを合わせると詳細が表示されます。
       </Typography>
     </Paper>
   );

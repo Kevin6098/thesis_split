@@ -61,7 +61,7 @@ export default function TopicComparison() {
           .attr('transform', `translate(${width / 2}, ${height + 50})`)
           .style('text-anchor', 'middle')
           .style('font-size', '12px')
-          .text('Topic Prevalence (%)');
+          .text('トピック出現率 (%)');
 
         // Add bars for high_rating
         g.selectAll('.bar-high')
@@ -85,7 +85,7 @@ export default function TopicComparison() {
               .style('font-size', '12px')
               .style('pointer-events', 'none');
 
-            tooltip.html(`${d.label}<br/>High Rating: ${d.high_rating}%`)
+            tooltip.html(`${d.label}<br/>高評価: ${d.high_rating}%`)
               .style('left', (event.pageX + 10) + 'px')
               .style('top', (event.pageY - 10) + 'px');
           })
@@ -115,7 +115,7 @@ export default function TopicComparison() {
               .style('font-size', '12px')
               .style('pointer-events', 'none');
 
-            tooltip.html(`${d.label}<br/>Most Commented: ${d.most_commented}%`)
+            tooltip.html(`${d.label}<br/>最多コメント: ${d.most_commented}%`)
               .style('left', (event.pageX + 10) + 'px')
               .style('top', (event.pageY - 10) + 'px');
           })
@@ -162,7 +162,7 @@ export default function TopicComparison() {
           .attr('x', 20)
           .attr('y', 12)
           .style('font-size', '12px')
-          .text('High Rating');
+          .text('高評価');
 
         legend.append('rect')
           .attr('x', 0)
@@ -176,7 +176,7 @@ export default function TopicComparison() {
           .attr('x', 20)
           .attr('y', 37)
           .style('font-size', '12px')
-          .text('Most Commented');
+          .text('最多コメント');
 
         setError(null);
       } catch (err) {
@@ -199,12 +199,11 @@ export default function TopicComparison() {
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Topic Prevalence Comparison: High-Rating vs Most-Commented
+        トピック出現率比較：高評価 vs 最多コメント
       </Typography>
       <Box ref={svgRef} />
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-        Comparative analysis showing how topic prevalence differs between high-rating and most-commented reviews.
-        Hover over bars for exact percentages.
+        トピック出現率の違いを比較分析しています。バーにカーソルを合わせると正確な割合が表示されます。
       </Typography>
     </Paper>
   );

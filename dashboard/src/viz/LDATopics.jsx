@@ -16,98 +16,98 @@ export default function LDATopics({ dataset }) {
             topic: 0,
             prevalence: 9.8,
             words: ['料理', '美味しい', 'サービス', '雰囲気', '満足'],
-            description: 'Food Quality & Service'
+            description: '料理の質・サービス'
           },
           {
             topic: 1,
             prevalence: 20.7,
             words: ['寿司', '新鮮', '大将', '技術', '職人'],
-            description: 'Sushi & Craftsmanship'
+            description: '寿司・職人技'
           },
           {
             topic: 2,
             prevalence: 11.0,
             words: ['価格', '高い', 'コスパ', '値段', '安い'],
-            description: 'Pricing & Value'
+            description: '価格・価値'
           },
           {
             topic: 3,
             prevalence: 16.6,
             words: ['予約', '時間', '待ち', '訪問', '開店'],
-            description: 'Booking & Timing'
+            description: '予約・時間管理'
           },
           {
             topic: 4,
             prevalence: 8.1,
             words: ['ラーメン', 'スープ', '麺', '醤油', '味'],
-            description: 'Ramen Specific'
+            description: 'ラーメン関連'
           },
           {
             topic: 5,
             prevalence: 12.0,
             words: ['雰囲気', '店内', '内装', '音楽', '照明'],
-            description: 'Atmosphere & Ambiance'
+            description: '雰囲気・空間'
           },
           {
             topic: 6,
             prevalence: 11.9,
             words: ['スタッフ', '接客', '対応', '笑顔', '親切'],
-            description: 'Staff & Service'
+            description: 'スタッフ・サービス'
           },
           {
             topic: 7,
             prevalence: 9.9,
             words: ['立地', 'アクセス', '駅', '場所', '便利'],
-            description: 'Location & Access'
+            description: '立地・アクセス'
           }
         ] : [
           {
             topic: 0,
             prevalence: 11.2,
             words: ['高い', '料理', '残念', '評価', '期待'],
-            description: 'Disappointment & Expectations'
+            description: '落胆・期待'
           },
           {
             topic: 1,
             prevalence: 19.9,
             words: ['時間', '遅い', '待ち', '開店', '到着'],
-            description: 'Timing Issues'
+            description: '時間的課題'
           },
           {
             topic: 2,
             prevalence: 14.6,
             words: ['予約', '電話', 'コース', '料理', '訪問'],
-            description: 'Reservation & Courses'
+            description: '予約・コース'
           },
           {
             topic: 3,
             prevalence: 13.6,
             words: ['東京', '料理', '美味しい', '評価', '人気'],
-            description: 'Tokyo Popular Restaurants'
+            description: '東京の人気店'
           },
           {
             topic: 4,
             prevalence: 9.6,
             words: ['人気', '予約', '訪問', '評価', '料理'],
-            description: 'Popular & Crowded Places'
+            description: '人気・混雑店'
           },
           {
             topic: 5,
             prevalence: 12.0,
             words: ['寿司', '大将', '美味しい', '予約', '残念'],
-            description: 'Sushi Restaurant Experiences'
+            description: '寿司体験'
           },
           {
             topic: 6,
             prevalence: 10.4,
             words: ['ラーメン', '醤油', 'スープ', '評価', '平日'],
-            description: 'Ramen Shop Reviews'
+            description: 'ラーメン店レビュー'
           },
           {
             topic: 7,
             prevalence: 8.5,
             words: ['評価', '点数', '名店', '訪問', '料理'],
-            description: 'Rating & Famous Restaurants'
+            description: '評価・有名店'
           }
         ];
 
@@ -139,7 +139,7 @@ export default function LDATopics({ dataset }) {
 
       // Scales
       const yScale = d3.scaleBand()
-        .domain(topics.map(d => `Topic ${d.topic}`))
+        .domain(topics.map(d => `トピック ${d.topic}`))
         .range([0, height])
         .padding(0.1);
 
@@ -166,7 +166,7 @@ export default function LDATopics({ dataset }) {
         .data(topics)
         .enter().append('rect')
         .attr('class', 'bar')
-        .attr('y', d => yScale(`Topic ${d.topic}`))
+        .attr('y', d => yScale(`トピック ${d.topic}`))
         .attr('height', yScale.bandwidth())
         .attr('x', 0)
         .attr('width', d => xScale(d.prevalence))
@@ -185,7 +185,7 @@ export default function LDATopics({ dataset }) {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-          tooltip.html(`${d.description}<br/>Prevalence: ${d.prevalence}%<br/>Words: ${d.words.join(', ')}`)
+          tooltip.html(`${d.description}<br/>出現率: ${d.prevalence}%<br/>単語: ${d.words.join(', ')}`)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 10) + 'px');
         })
@@ -199,7 +199,7 @@ export default function LDATopics({ dataset }) {
         .data(topics)
         .enter().append('text')
         .attr('class', 'label')
-        .attr('y', d => yScale(`Topic ${d.topic}`) + yScale.bandwidth() / 2)
+        .attr('y', d => yScale(`トピック ${d.topic}`) + yScale.bandwidth() / 2)
         .attr('x', d => xScale(d.prevalence) + 5)
         .attr('dy', '0.35em')
         .style('font-size', '11px')
@@ -222,11 +222,11 @@ export default function LDATopics({ dataset }) {
     <Box>
       <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Topic Prevalence - {dataset === 'high_rating' ? 'High Rating' : 'Most Commented'}
+          トピック出現率 - {dataset === 'high_rating' ? '高評価' : '最多コメント'}
         </Typography>
         <Box ref={svgRef} />
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Hover over bars to see topic details and top words.
+          バーにカーソルを合わせるとトピックの詳細と上位単語が表示されます。
         </Typography>
       </Paper>
 
@@ -236,10 +236,10 @@ export default function LDATopics({ dataset }) {
             <Card elevation={1} sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h6" color="primary" gutterBottom>
-                  Topic {topic.topic}: {topic.description}
+                  トピック {topic.topic}: {topic.description}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Prevalence: {topic.prevalence}%
+                  出現率: {topic.prevalence}%
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                   {topic.words.map((word, idx) => (

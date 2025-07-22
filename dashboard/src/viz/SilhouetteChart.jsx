@@ -75,12 +75,12 @@ export default function SilhouetteChart({ dataset }) {
           .attr('x', 0 - (height / 2))
           .attr('dy', '1em')
           .style('text-anchor', 'middle')
-          .text('Silhouette Score');
+          .text('シルエットスコア');
 
         g.append('text')
           .attr('transform', `translate(${width / 2}, ${height + margin.bottom})`)
           .style('text-anchor', 'middle')
-          .text('Number of Clusters (k)');
+          .text('クラスタ数 (k)');
 
         // Add line
         g.append('path')
@@ -111,7 +111,7 @@ export default function SilhouetteChart({ dataset }) {
               .style('font-size', '12px')
               .style('pointer-events', 'none');
 
-            tooltip.html(`k=${d.k}<br/>Silhouette: ${d.silhouette.toFixed(3)}`)
+            tooltip.html(`k=${d.k}<br/>シルエット: ${d.silhouette.toFixed(3)}`)
               .style('left', (event.pageX + 10) + 'px')
               .style('top', (event.pageY - 10) + 'px');
           })
@@ -136,7 +136,7 @@ export default function SilhouetteChart({ dataset }) {
           .style('font-size', '12px')
           .style('fill', '#dc004e')
           .style('font-weight', 'bold')
-          .text(`Optimal k=${optimalK.k}`);
+          .text(`最適k=${optimalK.k}`);
 
         setError(null);
       } catch (err) {
@@ -159,11 +159,11 @@ export default function SilhouetteChart({ dataset }) {
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Silhouette Analysis - {dataset === 'high_rating' ? 'High Rating' : 'Most Commented'}
+        シルエット分析 - {dataset === 'high_rating' ? '高評価' : '最多コメント'}
       </Typography>
       <Box ref={svgRef} />
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-        Higher silhouette scores indicate better-defined clusters. The optimal k is highlighted in red.
+        シルエットスコアが高いほどクラスタが明確に分離されています。最適なkは赤でハイライトされています。
       </Typography>
     </Paper>
   );

@@ -15,7 +15,7 @@ export default function SearchEngine() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Mock data for demonstration
+  // デモ用のモックデータ
   const mockResults = [
     {
       id: 1,
@@ -35,13 +35,13 @@ export default function SearchEngine() {
       sentiment: "negative",
       sentiment_score: 0.8
     },
-    // Add more mock results...
+    // さらにモック結果を追加...
   ];
 
   useEffect(() => {
     if (searchTerm) {
       setLoading(true);
-      // Simulate API call
+      // API 呼び出しをシミュレート
       setTimeout(() => {
         setResults(mockResults.filter(result => 
           result.comment.includes(searchTerm) &&
@@ -64,23 +64,23 @@ export default function SearchEngine() {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        Search Engine
+        検索エンジン
       </Typography>
       
       <Card elevation={3} sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom color="primary">
-            Search Reviews
+            レビュー検索
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Search Term"
+                label="検索ワード"
                 variant="outlined"
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder="Enter keywords to search reviews..."
+                placeholder="レビューを検索するキーワードを入力..."
                 InputProps={{
                   startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' }} />
                 }}
@@ -88,44 +88,44 @@ export default function SearchEngine() {
             </Grid>
             <Grid item xs={12} md={2}>
               <FormControl fullWidth>
-                <InputLabel>Dataset</InputLabel>
+                <InputLabel>データセット</InputLabel>
                 <Select
                   value={dataset}
-                  label="Dataset"
+                  label="データセット"
                   onChange={(e) => setDataset(e.target.value)}
                 >
-                  <MenuItem value="all">All</MenuItem>
-                  <MenuItem value="high_rating">High Rating</MenuItem>
-                  <MenuItem value="most_commented">Most Commented</MenuItem>
+                  <MenuItem value="all">すべて</MenuItem>
+                  <MenuItem value="high_rating">高評価</MenuItem>
+                  <MenuItem value="most_commented">最多コメント</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={2}>
               <FormControl fullWidth>
-                <InputLabel>Cluster</InputLabel>
+                <InputLabel>クラスタ</InputLabel>
                 <Select
                   value={cluster}
-                  label="Cluster"
+                  label="クラスタ"
                   onChange={(e) => setCluster(e.target.value)}
                 >
-                  <MenuItem value="all">All</MenuItem>
+                  <MenuItem value="all">すべて</MenuItem>
                   {[0,1,2,3,4,5,6,7,8].map(i => (
-                    <MenuItem key={i} value={i.toString()}>Cluster {i}</MenuItem>
+                    <MenuItem key={i} value={i.toString()}>クラスタ {i}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={2}>
               <FormControl fullWidth>
-                <InputLabel>Sentiment</InputLabel>
+                <InputLabel>感情</InputLabel>
                 <Select
                   value={sentiment}
-                  label="Sentiment"
+                  label="感情"
                   onChange={(e) => setSentiment(e.target.value)}
                 >
-                  <MenuItem value="all">All</MenuItem>
-                  <MenuItem value="positive">Positive</MenuItem>
-                  <MenuItem value="negative">Negative</MenuItem>
+                  <MenuItem value="all">すべて</MenuItem>
+                  <MenuItem value="positive">ポジティブ</MenuItem>
+                  <MenuItem value="negative">ネガティブ</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -135,14 +135,14 @@ export default function SearchEngine() {
 
       {loading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <Typography>Searching...</Typography>
+          <Typography>検索中...</Typography>
         </Box>
       )}
 
       {results.length > 0 && (
         <>
           <Typography variant="h6" gutterBottom>
-            Found {results.length} results
+            {results.length} 件の結果が見つかりました
           </Typography>
           <Grid container spacing={2}>
             {results.slice((currentPage - 1) * 10, currentPage * 10).map((result) => (
@@ -154,27 +154,27 @@ export default function SearchEngine() {
                   <Divider sx={{ my: 2 }} />
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                     <Chip 
-                      label={result.dataset === 'high_rating' ? 'High Rating' : 'Most Commented'} 
+                      label={result.dataset === 'high_rating' ? '高評価' : '最多コメント'} 
                       color="primary" 
                       size="small" 
                     />
                     <Chip 
-                      label={`Cluster ${result.cluster}`} 
+                      label={`クラスタ ${result.cluster}`} 
                       color="secondary" 
                       size="small" 
                     />
                     <Chip 
-                      label={`Topic ${result.topic}`} 
+                      label={`トピック ${result.topic}`} 
                       color="info" 
                       size="small" 
                     />
                     <Chip 
-                      label={result.sentiment} 
+                      label={result.sentiment === 'positive' ? 'ポジティブ' : 'ネガティブ'} 
                       color={result.sentiment === 'positive' ? 'success' : 'error'} 
                       size="small" 
                     />
                     <Chip 
-                      label={`Score: ${result.sentiment_score}`} 
+                      label={`スコア: ${result.sentiment_score}`} 
                       variant="outlined" 
                       size="small" 
                     />
@@ -200,7 +200,7 @@ export default function SearchEngine() {
       {searchTerm && !loading && results.length === 0 && (
         <Box sx={{ textAlign: 'center', my: 4 }}>
           <Typography color="text.secondary">
-            No results found for "{searchTerm}"
+            "{searchTerm}" に一致する結果はありません
           </Typography>
         </Box>
       )}
