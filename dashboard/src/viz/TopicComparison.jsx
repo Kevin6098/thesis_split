@@ -11,14 +11,14 @@ export default function TopicComparison() {
       try {
         // Mock comparative topic prevalence data
         const topicData = [
-          { topic: 0, high_rating: 9.8, most_commented: 11.2, label: 'Food Quality' },
-          { topic: 1, high_rating: 20.7, most_commented: 19.9, label: 'Service Experience' },
-          { topic: 2, high_rating: 11.0, most_commented: 14.6, label: 'Pricing & Value' },
-          { topic: 3, high_rating: 16.6, most_commented: 13.6, label: 'Booking & Timing' },
-          { topic: 4, high_rating: 8.1, most_commented: 9.6, label: 'Specific Cuisine' },
-          { topic: 5, high_rating: 12.0, most_commented: 12.0, label: 'Atmosphere' },
-          { topic: 6, high_rating: 11.9, most_commented: 10.4, label: 'Staff Interaction' },
-          { topic: 7, high_rating: 9.9, most_commented: 8.5, label: 'Location & Access' }
+          { topic: 0, high_rating: 9.8, most_commented: 11.2, label: '料理の質' },
+          { topic: 1, high_rating: 20.7, most_commented: 19.9, label: 'サービス体験' },
+          { topic: 2, high_rating: 11.0, most_commented: 14.6, label: '価格と価値' },
+          { topic: 3, high_rating: 16.6, most_commented: 13.6, label: '予約とタイミング' },
+          { topic: 4, high_rating: 8.1, most_commented: 9.6, label: '特定の料理' },
+          { topic: 5, high_rating: 12.0, most_commented: 12.0, label: '雰囲気' },
+          { topic: 6, high_rating: 11.9, most_commented: 10.4, label: 'スタッフとの交流' },
+          { topic: 7, high_rating: 9.9, most_commented: 8.5, label: '場所とアクセス' }
         ];
 
         // Clear previous chart

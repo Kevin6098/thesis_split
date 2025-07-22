@@ -20,13 +20,13 @@ import SummarizeIcon from '@mui/icons-material/Summarize';
 const drawerWidth = 280;
 
 const items = [
-  { text: 'Introduction',           path: '/', icon: <HomeIcon /> },
-  { text: 'Research Steps',         path: '/research-steps', icon: <TimelineIcon /> },
-  { text: 'High-Rating Results',    path: '/high-rating', icon: <StarIcon /> },
-  { text: 'Most-Commented Results', path: '/most-commented', icon: <CommentIcon /> },
-  { text: 'Search Engine',          path: '/search', icon: <SearchIcon /> },
-  { text: 'Mixed Topics',           path: '/mixed-topics', icon: <MergeTypeIcon /> },
-  { text: 'Conclusion',             path: '/conclusion', icon: <SummarizeIcon /> },
+  { text: 'はじめに',           path: '/', icon: <HomeIcon /> },
+  { text: '研究手順',         path: '/research-steps', icon: <TimelineIcon /> },
+  { text: '高評価結果',    path: '/high-rating', icon: <StarIcon /> },
+  { text: 'コメント最多結果', path: '/most-commented', icon: <CommentIcon /> },
+  { text: '検索エンジン',          path: '/search', icon: <SearchIcon /> },
+  { text: '混合トピック',           path: '/mixed-topics', icon: <MergeTypeIcon /> },
+  { text: '結論',             path: '/conclusion', icon: <SummarizeIcon /> },
 ];
 
 export default function NavigationDrawer() {
