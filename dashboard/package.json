@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.14",
     "@supabase/supabase-js": "^2.52.0",
     "d3": "^7.9.0",
+    "dotenv": "^17.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3"

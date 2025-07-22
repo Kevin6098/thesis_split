@@ -7,10 +7,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import { createClient } from "@supabase/supabase-js";
 
 // ─── Supabase client ────────────────────────────────────────
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Supabase credentials not found. Please check your .env file.");
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+
 
 const PAGE_SIZE = 10;
 
@@ -32,21 +38,32 @@ export default function SearchEngine() {
 
       setLoading(true);
 
-      let query = supabase.from("all_reviews")
-                          .select("*", { count: "exact" })
-                          .ilike("comment", `%${searchTerm}%`);
+      try {
+        let query = supabase.from("all_reviews")
+                           .select("*", { count: "exact" })
+                           .ilike("comment", `%${searchTerm}%`);
 
-      if (dataset !== "all") query = query.eq("dataset", dataset);
+        if (dataset !== "all") query = query.eq("dataset", dataset);
 
-      const from = (page - 1) * PAGE_SIZE;
-      const to   = from + PAGE_SIZE - 1;
-      const { data, count, error } = await query.range(from, to);
+        const from = (page - 1) * PAGE_SIZE;
+        const to   = from + PAGE_SIZE - 1;
+        const { data, count, error } = await query.range(from, to);
 
-      if (error) {
-        console.error(error); setResults([]); setTotal(0);
-      } else {
-        setResults(data ?? []); setTotal(count ?? 0);
+        if (error) {
+          console.error("Supabase error:", error); 
+          setResults([]); 
+          setTotal(0);
+        } else {
+          console.log("Search results:", data, "Count:", count);
+          setResults(data ?? []); 
+          setTotal(count ?? 0);
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+        setResults([]);
+        setTotal(0);
       }
+      
       setLoading(false);
     };
 
@@ -58,6 +75,8 @@ export default function SearchEngine() {
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 4, fontWeight: "bold" }}>
         検索エンジン
       </Typography>
+
+
 
       {/* ─────────────── Filters ─────────────── */}
       <Card elevation={3} sx={{ mb: 4 }}>
