@@ -6,68 +6,65 @@ import {
 
 const steps = [
   {
-    label: 'データ収集と前処理',
-    description: '高評価および最多コメントカテゴリから日本のレストランレビューを収集',
+    label: '1. データ収集と前処理',
+    description: '高評価・最多コメントの日本語レビューを収集し、機械学習向けに整形',
     details: [
-      'レビュー プラットフォームからの生データ抽出',
-      'テキストのクレンジングと正規化',
-      '日本語テキストの前処理',
-      'ストップワード除去とトークン化'
+      'プラットフォームからレビュー抽出',
+      'テキストの正規化・トークン化',
+      'ストップワード除去・形態素解析'
     ],
     techniques: ['Text Cleaning', 'Tokenization', 'Normalization']
   },
   {
-    label: '特徴量エンジニアリング',
-    description: '機械学習用にテキストデータを数値表現に変換',
+    label: '2. 特徴量エンジニアリング（ベクトル化）',
+    description: 'レビューを数値ベクトル（TF-IDF）に変換',
     details: [
-      'TF-IDF ベクトル化',
-      'N-gram 特徴抽出',
-      '次元数の検討',
-      '特徴量選択の最適化'
+      'build_tfidf()でTF-IDF行列X作成（N-gram対応）',
+      'ノイズ除去（min_df/max_df）と特徴数制御',
+      '語彙の確認・調整'
     ],
     techniques: ['TF-IDF', 'Vectorization', 'N-grams']
   },
   {
-    label: 'K-means クラスタリング',
-    description: '教師なしクラスタリングを適用して類似レビューをグループ化',
+    label: '3. K-meansクラスタリング',
+    description: '類似レビューをグループ化し、パターンを発見',
     details: [
-      'シルエット分析による最適クラスタ数の決定',
-      'K-means アルゴリズムの実装',
-      'クラスタの検証と解釈',
-      '代表サンプルの抽出'
+      'シルエット分析で適切なクラスタ数kを決定',
+      'K-means実行しクラスタIDを付与',
+      '各クラスタの特徴語・レビュー例を確認・可視化'
     ],
     techniques: ['K-means', 'Silhouette Analysis', 'Cluster Validation']
   },
   {
-    label: 'トピックモデリング（LDA）',
-    description: 'Latent Dirichlet Allocation を用いて潜在トピックを抽出',
+    label: '4. LDAトピックモデリング',
+    description: '1レビューに複数話題が含まれる構造を抽出',
     details: [
-      'LDA モデルの学習と最適化',
-      'トピック一貫性の評価',
-      'トピック–ドキュメント確率分布',
-      'トピックのラベリングと解釈'
+      'LDA学習し、レビューを話題分布に変換',
+      'トピック語彙の確認・ラベリング',
+      '各レビューに主トピックを付与'
     ],
     techniques: ['LDA', 'Topic Modeling', 'Probabilistic Analysis']
   },
   {
-    label: '感情分析',
-    description: 'ルールベース手法で感情パターンを分析',
+    label: '5. 感情分析（ルールベース）',
+    description: 'ネガティブ語句の有無でレビューの感情を自動判定',
     details: [
-      '日本語ネガティブキーワードの識別',
-      'ルールベースの感情分類',
-      '感情スコアの算出',
-      '感情分布の分析'
+      '_NEG_KEYWORDS によるスコア付け',
+      'トピックやクラスタごとの不満度を可視化・分析',
+      '高評価なのに不満が多いレビューの検出'
     ],
     techniques: ['Rule-based Classification', 'Sentiment Scoring']
   },
   {
-    label: '可視化と分析',
-    description: 'インタラクティブな可視化と包括的解析を作成',
+    label: '6. 可視化・分析',
+    description: 'クラスタ／トピックの傾向を多角的に可視化',
     details: [
-      'クラスタ分布の可視化',
-      'トピック出現頻度の分析',
-      'クラスタ・トピック関係のヒートマップ生成',
-      'インタラクティブダッシュボードの開発'
+      'クラスタサイズ棒グラフ',
+      'クラスタ別 N-gram 頻度グラフ',
+      'トピック出現率の折れ線比較',
+      'クラスタ×トピック ヒートマップ',
+      '高評価 vs 最多コメントの偏り比較',
+      'Streamlit でインタラクティブUI構築'
     ],
     techniques: ['Data Visualization', 'Interactive Charts', 'Statistical Analysis']
   }
@@ -77,7 +74,7 @@ export default function ResearchSteps() {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        研究手法
+        研究ステップ
       </Typography>
       
       <Grid container spacing={3}>
