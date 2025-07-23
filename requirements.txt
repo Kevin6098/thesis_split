@@ -7,3 +7,4 @@ janome>=0.5          # Japanese tokenizer
 joblib>=1.4
 transformers>=4.42   # (optional) BERT sentiment in the future
 scipy>=1.13
+tqdm>=4.66           # Progress bars

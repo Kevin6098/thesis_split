@@ -25,20 +25,29 @@ STAGES = {
 }
 
 def run(slug: str, stage: str):
+    print(f"🚀 Starting pipeline for dataset: {slug}")
+    print(f"📋 Stage: {stage}")
+    
     # Stage: clean → produce cleaned text
     if stage == "clean":
+        print("📥 Loading raw data...")
         df = load_raw(config.DATASETS[slug])
+        print(f"✅ Loaded {len(df):,} records")
+        
         df = cleanse_dataframe(df, text_col="comment")
         out = config.DATA_DIR / "processed" / f"{slug}_clean_text.parquet"
         df.to_parquet(out, index=False)
-        print(f"✔ Clean text saved to {out}")
+        print(f"✅ Clean text saved to {out}")
         return
 
     # For all other stages, load the cleaned text
     clean_path = config.DATA_DIR / "processed" / f"{slug}_clean_text.parquet"
     if not clean_path.exists():
         raise FileNotFoundError(f"Run --stage clean first (no file at {clean_path})")
+    
+    print("📥 Loading cleaned data...")
     df = pd.read_parquet(clean_path)
+    print(f"✅ Loaded {len(df):,} cleaned records")
 
     if stage == "cluster":
         X, _      = build_tfidf(df)
@@ -47,10 +56,11 @@ def run(slug: str, stage: str):
         df["cluster"] = km.labels_
         out = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
         df.to_parquet(out, index=False)
-        print(f"✔ Clustering done (k={best_k}), saved to {out}")
+        print(f"✅ Clustering done (k={best_k}), saved to {out}")
         return
 
     if stage == "topics":
+        print("📊 Analyzing cluster topics...")
         clustered_path = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
         df = pd.read_parquet(clustered_path)
         for cid in sorted(df["cluster"].unique()):
@@ -61,17 +71,21 @@ def run(slug: str, stage: str):
         return
 
     if stage == "viz":
+        print("📈 Generating visualizations...")
         proc = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
         plot_cluster_distribution(proc)
         # Optionally: loop through clusters to plot top n-grams per cluster
+        print("✅ Visualizations completed")
         return
 
     if stage == "sentiment":
+        print("😊 Analyzing sentiment...")
         scored_path = save_sentiment(df, slug)
-        print(f"✔ Sentiment scored & saved to {scored_path}")
+        print(f"✅ Sentiment scored & saved to {scored_path}")
         return
 
     if stage == "lda":
+        print("📚 Fitting LDA model...")
         lda, vec = fit_lda(df, n_topics=8, model_path=config.MODEL_DIR / f"{slug}_lda.pkl")
         display_topics(lda, vec)
         return

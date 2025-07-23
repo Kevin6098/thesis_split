@@ -6,6 +6,7 @@ from __future__ import annotations
 import re, unicodedata
 import pandas as pd
 from janome.tokenizer import Tokenizer
+from tqdm import tqdm
 from .stop_words import JP_STOPWORDS
 
 # Patterns for noise removal
@@ -69,5 +70,12 @@ def clean_comment(text: str) -> str:
 def cleanse_dataframe(df: pd.DataFrame, text_col: str = "comment") -> pd.DataFrame:
     """Apply `clean_comment` to every row, storing result in `clean_joined`."""
     df = df.copy()
-    df["clean_joined"] = df[text_col].astype(str).map(clean_comment)
+    
+    # Add progress bar for text cleaning
+    print("🔄 Cleaning text data...")
+    cleaned_texts = []
+    for text in tqdm(df[text_col].astype(str), desc="Cleaning comments", unit="comment"):
+        cleaned_texts.append(clean_comment(text))
+    
+    df["clean_joined"] = cleaned_texts
     return df
