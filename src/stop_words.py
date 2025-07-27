@@ -3,6 +3,8 @@
 # Master list of Japanese stop-words, interjections, HTML fragments,
 # emoji, filler phrases, etc.  Feel free to extend or prune.
 
+import re
+
 JP_STOPWORDS = {
     # 感動詞・間投詞
     "ああ", "あら", "ありゃ", "あれ", "おお", "おっと", "おや", "うん", "ええ", "えっ",
@@ -39,5 +41,14 @@ JP_STOPWORDS = {
     "などの", "などが", "こと", "さん"
 }
 
+def get_cleaned_stopwords():
+    # Only keep words that match the token pattern (alphanumeric/underscore, no HTML or special chars)
+    token_pattern = re.compile(r"^\w+$", re.UNICODE)
+    cleaned = set()
+    for word in JP_STOPWORDS:
+        if token_pattern.match(word):
+            cleaned.add(word)
+    return cleaned
+
 # Back-compat alias — modules that still import STOP_WORDS will work
-STOP_WORDS = JP_STOPWORDS
+STOP_WORDS = get_cleaned_stopwords()

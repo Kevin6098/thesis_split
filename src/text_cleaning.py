@@ -56,7 +56,46 @@ def _pos_ok(token: str) -> bool:
 
 def _extra_ok(token: str) -> bool:
     """Drop single-char hiragana, 'し', and stopwords."""
+    # Special handling for ない/なく - keep them if they're part of adjective forms
+    if token in ["ない", "なく"]:
+        return True  # Keep ない/なく, we'll handle merging in _merge_adj_negation
+    
     return len(token) > 1 and token != "し" and token not in JP_STOPWORDS
+
+def _merge_adj_negation(tokens: list[str]) -> list[str]:
+    """Merge ない with preceding adjective forms."""
+    merged = []
+    i = 0
+    while i < len(tokens):
+        if i + 1 < len(tokens) and tokens[i + 1] in ["ない", "なく"]:
+            # Check if the previous token is an adjective form
+            prev_token = tokens[i]
+            # Handle various adjective endings that can be followed by ない/なく
+            if (prev_token.endswith(("く", "しく", "らしく", "い", "しい", "らしい")) or 
+                prev_token.endswith(("た", "かった", "らしかった"))):
+                # Merge adjective + ない/なく
+                merged.append(prev_token + tokens[i + 1])
+                i += 2  # Skip both tokens
+            else:
+                merged.append(tokens[i])
+                i += 1
+        else:
+            merged.append(tokens[i])
+            i += 1
+    return merged
+
+def _merge_suffixes(tokens: list[str], suffixes=["ない", "たい"]) -> list[str]:
+    """Merge any token with a following suffix (e.g., ない, たい)."""
+    merged = []
+    i = 0
+    while i < len(tokens):
+        if i + 1 < len(tokens) and tokens[i + 1] in suffixes:
+            merged.append(tokens[i] + tokens[i + 1])
+            i += 2
+        else:
+            merged.append(tokens[i])
+            i += 1
+    return merged
 
 def clean_comment(text: str) -> str:
     """Full pipeline for one comment → cleaned, space-joined tokens."""
@@ -65,6 +104,8 @@ def clean_comment(text: str) -> str:
     text = _remove_noncontent(text)
     tokens = _tokenise(text)
     tokens = [t for t in tokens if _pos_ok(t) and _extra_ok(t)]
+    # Merge suffixes (ない, たい)
+    tokens = _merge_suffixes(tokens, suffixes=["ない", "たい"])
     return " ".join(tokens)
 
 def cleanse_dataframe(df: pd.DataFrame, text_col: str = "comment") -> pd.DataFrame:

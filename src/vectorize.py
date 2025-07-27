@@ -6,9 +6,9 @@ from src.stop_words import STOP_WORDS
 
 def build_tfidf(
     df: pd.DataFrame,
-    max_features: int = 20_000,
-    min_df: int = 5,
-    max_df: float = 0.90
+    max_features: int = 10_000,  # Reduced from 20_000
+    min_df: int = 20,            # Increased from 5
+    max_df: float = 0.85         # Reduced from 0.90
 ):
     """
     Build a TF–IDF matrix with sanity checks.
