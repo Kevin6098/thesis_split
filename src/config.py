@@ -5,8 +5,8 @@ DATA_DIR      = ROOT / "data"
 MODEL_DIR     = ROOT / "models"
 
 DATASETS = {
-    "high_rating"    : DATA_DIR / "raw" / "high_rating_comments.csv",
-    "most_commented" : DATA_DIR / "raw" / "most_commented_comments.csv",
+    "high_rating"    : DATA_DIR / "filtered" / "high_rating_comments.csv",
+    "most_commented" : DATA_DIR / "filtered" / "most_commented_comments.csv",
 }
 
 RANDOM_STATE            = 42

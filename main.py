@@ -9,7 +9,7 @@ from src.data_collection    import load_raw
 from src.text_cleaning      import cleanse_dataframe
 from src.vectorize          import build_tfidf
 from src.cluster_eval       import best_k_silhouette, fast_best_k_silhouette, parallel_best_k_silhouette
-from src.clustering         import fit_kmeans
+from src.clustering         import fit_kmeans, apply_clustering_with_invalid_handling
 from src.topic_inspection   import summarise_cluster
 from src.visualization      import plot_cluster_distribution, plot_top_ngrams
 from src.sentiment_analysis import save_sentiment
@@ -54,53 +54,39 @@ def run(slug: str, stage: str, use_sampling=True, sample_size=100000, use_parall
     print(f"✅ Loaded {len(df):,} cleaned records")
 
     if stage == "cluster":
-        print("🔍 Building TF-IDF vectors...")
-        X, _ = build_tfidf(df)
-        print(f"✅ TF-IDF built: {X.shape}")
-        
-        # Choose the appropriate k evaluation method
-        if use_parallel:
-            print("⚡ Using parallel k evaluation...")
-            best_k, _ = parallel_best_k_silhouette(
-                X, 
-                k_min=2, 
-                k_max=10, 
-                sample_size=sample_size, 
-                n_jobs=n_jobs
-            )
-        elif use_sampling:
-            print("🎲 Using fast sampling-based k evaluation...")
-            best_k, _ = fast_best_k_silhouette(
-                X, 
-                k_min=2, 
-                k_max=10, 
-                sample_size=sample_size
-            )
-        else:
-            print("🔄 Using original k evaluation...")
-            best_k, _ = best_k_silhouette(
-                X, 
-                k_min=2, 
-                k_max=10, 
-                use_sampling=False
-            )
-        
+        print("🔍 Building TF-IDF vectors and improved clustering with silhouette score...")
+        # Use improved clustering pipeline
+        from src.vectorize import build_tfidf
+        from src.cluster_eval import fast_best_k_silhouette
+        model_path = config.MODEL_DIR / f"{slug}_improved_kmeans.pkl"
+        # Build TF-IDF and get valid/invalid splits
+        X, vec, df_valid, df_invalid = build_tfidf(df)
+        print(f"🔎 Running silhouette score to find optimal k...")
+        # Silhouette score range 2-9
+        best_k, _ = fast_best_k_silhouette(X, k_min=2, k_max=9, sample_size=min(100000, X.shape[0]))
         print(f"🎯 Optimal k: {best_k}")
-        
-        # Perform clustering
-        print("🔀 Performing clustering...")
-        km = fit_kmeans(X, best_k, config.MODEL_DIR / f"{slug}_kmeans_k{best_k}.pkl")
-        df["cluster"] = km.labels_
-        out = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
-        df.to_parquet(out, index=False)
-        print(f"✅ Clustering done (k={best_k}), saved to {out}")
+        # Fit K-means on valid documents only
+        from src.clustering import fit_kmeans
+        km = fit_kmeans(X, best_k, model_path)
+        df_valid["cluster"] = km.labels_
+        # Assign a special cluster label (-1) to invalid documents
+        df_invalid["cluster"] = -1
+        # Combine the dataframes
+        df_with_clusters = pd.concat([df_valid, df_invalid], ignore_index=True)
+        # Sort by original index to maintain order
+        df_with_clusters = df_with_clusters.sort_index()
+        out = config.DATA_DIR / "processed" / f"{slug}_improved_clustered.parquet"
+        df_with_clusters.to_parquet(out, index=False)
+        print(f"✅ Improved clustering done (k={best_k}), saved to {out}")
         return
 
     if stage == "topics":
         print("📊 Analyzing cluster topics...")
-        clustered_path = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
+        clustered_path = config.DATA_DIR / "processed" / f"{slug}_improved_clustered.parquet"
         df = pd.read_parquet(clustered_path)
         for cid in sorted(df["cluster"].unique()):
+            if cid == -1:
+                continue  # Skip invalid documents
             phrases, _ = summarise_cluster(df, cid)
             print(f"\nCluster {cid}:")
             for phr, cnt in phrases:
@@ -109,7 +95,7 @@ def run(slug: str, stage: str, use_sampling=True, sample_size=100000, use_parall
 
     if stage == "viz":
         print("📈 Generating visualizations...")
-        proc = config.DATA_DIR / "processed" / f"{slug}_with_clusters.parquet"
+        proc = config.DATA_DIR / "processed" / f"{slug}_improved_clustered.parquet"
         plot_cluster_distribution(proc)
         # Optionally: loop through clusters to plot top n-grams per cluster
         print("✅ Visualizations completed")
@@ -123,7 +109,9 @@ def run(slug: str, stage: str, use_sampling=True, sample_size=100000, use_parall
 
     if stage == "lda":
         print("📚 Fitting LDA model...")
-        lda, vec = fit_lda(df, n_topics=8, model_path=config.MODEL_DIR / f"{slug}_lda.pkl")
+        # Use the same number of topics as clustering (range 2-9)
+        n_topics = 9 if slug == "high_rating" else 8  # Match clustering range
+        lda, vec = fit_lda(df, n_topics=n_topics, model_path=config.MODEL_DIR / f"{slug}_lda.pkl")
         display_topics(lda, vec)
         return
 

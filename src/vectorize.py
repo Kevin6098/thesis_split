@@ -7,8 +7,8 @@ from src.stop_words import STOP_WORDS
 def build_tfidf(
     df: pd.DataFrame,
     max_features: int = 10_000,  # Reduced from 20_000
-    min_df: int = 20,            # Increased from 5
-    max_df: float = 0.85         # Reduced from 0.90
+    min_df: int = 30,            # Increased from 20 to suppress rare terms
+    max_df: float = 0.8          # Reduced from 0.85 to suppress overly common terms
 ):
     """
     Build a TF–IDF matrix with sanity checks.
@@ -24,6 +24,24 @@ def build_tfidf(
         vec: the fitted TfidfVectorizer.
     """
     print("🔄 Building TF–IDF vectors...")
+    
+    # Filter out empty strings and NaN values
+    print(f"📊 Original dataset size: {len(df):,}")
+    
+    # Create mask for non-empty, non-NaN clean_joined values
+    valid_mask = (df["clean_joined"].notna() & 
+                  (df["clean_joined"].astype(str).str.strip() != "") &
+                  (df["clean_joined"] != "nan"))
+    
+    df_valid = df[valid_mask].copy()
+    df_invalid = df[~valid_mask].copy()
+    
+    print(f"📊 Valid documents for TF-IDF: {len(df_valid):,}")
+    print(f"📊 Invalid documents (empty/NaN): {len(df_invalid):,}")
+    
+    if len(df_valid) == 0:
+        raise ValueError("No valid documents found for TF-IDF vectorization!")
+    
     vec = TfidfVectorizer(
         max_features   = max_features,
         ngram_range    = (1, 2),               # unigrams + bigrams
@@ -37,7 +55,7 @@ def build_tfidf(
 
     # 1) fit & transform, timing
     start = time.time()
-    X     = vec.fit_transform(df["clean_joined"].values)
+    X     = vec.fit_transform(df_valid["clean_joined"].values)
     elapsed = time.time() - start
     print(f"   • Completed in {elapsed:.2f}s")
 
@@ -58,4 +76,4 @@ def build_tfidf(
     total_mem  = (mem_data + mem_idx + mem_indptr) / 1e6
     print(f"💾 CSR memory footprint: {total_mem:.1f} MB")
 
-    return X, vec
+    return X, vec, df_valid, df_invalid

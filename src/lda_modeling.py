@@ -25,14 +25,22 @@ def fit_lda(
     vec = CountVectorizer(
         max_features=max_features,
         ngram_range=ngram_range,
-        token_pattern=r"(?u)\b\w+\b"
+        token_pattern=r"(?u)\b\w+\b",
+        min_df=30,  # Increased to suppress rare terms
+        max_df=0.8  # Reduced to suppress overly common terms
     )
     X = vec.fit_transform(df["clean_joined"].values)
 
+    # Use asymmetric alpha for sparser topic distributions
+    doc_topic_prior = 0.1  # Document-topic prior (alpha)
+    topic_word_prior = 0.01  # Topic-word prior (beta)
+    
     lda = LatentDirichletAllocation(
         n_components=n_topics,
         random_state=42,
-        learning_method="batch"
+        learning_method="batch",
+        doc_topic_prior=doc_topic_prior,
+        topic_word_prior=topic_word_prior
     )
     lda.fit(X)
     dump((lda, vec), model_path)

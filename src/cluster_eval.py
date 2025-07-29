@@ -17,12 +17,13 @@ def sampled_silhouette_score(X, labels, sample_size=100000, random_state=42):
     Returns:
         Approximate silhouette score
     """
-    if len(X) <= sample_size:
+    n_samples = X.shape[0]  # Use shape[0] for sparse matrices
+    if n_samples <= sample_size:
         return silhouette_score(X, labels)
     
     # Sample data for faster computation
     np.random.seed(random_state)
-    indices = np.random.choice(len(X), sample_size, replace=False)
+    indices = np.random.choice(n_samples, sample_size, replace=False)
     X_sample = X[indices]
     labels_sample = labels[indices]
     
@@ -92,14 +93,15 @@ def fast_best_k_silhouette(X, k_min=2, k_max=10, random_state=42, sample_size=10
     print(f"🎲 Sample size: {sample_size:,} records")
     
     # Take a sample for faster evaluation
-    if len(X) > sample_size:
+    n_samples = X.shape[0]  # Use shape[0] for sparse matrices
+    if n_samples > sample_size:
         np.random.seed(random_state)
-        indices = np.random.choice(len(X), sample_size, replace=False)
+        indices = np.random.choice(n_samples, sample_size, replace=False)
         X_sample = X[indices]
-        print(f"📊 Using sample of {len(X_sample):,} records from {len(X):,} total")
+        print(f"📊 Using sample of {X_sample.shape[0]:,} records from {n_samples:,} total")
     else:
         X_sample = X
-        print(f"📊 Using full dataset ({len(X_sample):,} records)")
+        print(f"📊 Using full dataset ({n_samples:,} records)")
     
     scores = {}
     start_time = time.time()
@@ -161,8 +163,9 @@ def parallel_best_k_silhouette(X, k_min=2, k_max=10, random_state=42, sample_siz
         )
         
         # Fit on sample for speed
-        if len(X_data) > sample_sz:
-            sample_indices = np.random.choice(len(X_data), sample_sz, replace=False)
+        n_samples = X_data.shape[0]  # Use shape[0] for sparse matrices
+        if n_samples > sample_sz:
+            sample_indices = np.random.choice(n_samples, sample_sz, replace=False)
             X_sample = X_data[sample_indices]
         else:
             X_sample = X_data
